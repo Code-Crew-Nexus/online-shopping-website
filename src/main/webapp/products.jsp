@@ -30,8 +30,8 @@
   <h2>Welcome, <%= auth.getUsername() %>!</h2>
   <div>
     <!-- Link to see the items added to the session -->
-    <a href="cart.jsp" style="margin-right: 20px; font-weight: bold;">📦 View Cart</a>
-    <a href="logout" style="color: red;">Logout</a>
+    <a href="cart.jsp" style="margin-right: 20px; font-weight: bold;">🛒 View Cart</a>
+    <a href="logout" style="color: #ef4444; text-decoration:none;">Logout</a>
   </div>
 </div>
 <hr>

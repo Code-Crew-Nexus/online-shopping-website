@@ -11,7 +11,7 @@
   <title>Register - Online Shopping</title>
   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 </head>
-<body>
+<body align="center">
 <h2>Create an Account</h2>
 <form action="register" method="post">
   <input type="text" name="username" placeholder="Username" required><br>
