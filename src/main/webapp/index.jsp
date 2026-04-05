@@ -10,16 +10,131 @@
 <head>
   <title>Register - Online Shopping</title>
   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
-</head>
-<body align="center">
-<h2>Create an Account</h2>
-<form action="register" method="post">
-  <input type="text" name="username" placeholder="Username" required><br>
-  <input type="email" name="email" placeholder="Email" required><br>
-  <input type="password" name="password" placeholder="Password" required><br>
-  <button type="submit">Register</button>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: radial-gradient(circle at top, #1e293b 0%, #0b1025 45%, #060b1b 100%);
+      color: #e2e8f0;
+    }
 
-  <p>Already have an account? <a href="login.jsp">Login here</a></p>
-</form>
+    .auth-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .auth-card {
+      width: min(92vw, 460px);
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 18px;
+      box-shadow: 0 20px 60px rgba(2, 6, 23, 0.55);
+      padding: 28px 24px;
+    }
+
+    .auth-title {
+      margin: 0;
+      font-size: 1.6rem;
+      color: #f8fafc;
+    }
+
+    .auth-subtitle {
+      margin: 8px 0 20px;
+      color: #94a3b8;
+      font-size: 0.95rem;
+    }
+
+    .auth-message {
+      margin: 0 0 14px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.92rem;
+    }
+
+    .auth-message.success {
+      color: #86efac;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+    }
+
+    .auth-message.error {
+      color: #fca5a5;
+      background: rgba(239, 68, 68, 0.14);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+    }
+
+    .auth-form input {
+      width: 100%;
+      box-sizing: border-box;
+      margin: 0 0 12px;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.32);
+      background: rgba(30, 41, 59, 0.55);
+      color: #f8fafc;
+      outline: none;
+    }
+
+    .auth-form input:focus {
+      border-color: #818cf8;
+      box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.18);
+    }
+
+    .auth-btn {
+      width: 100%;
+      border: none;
+      border-radius: 10px;
+      padding: 12px;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+      box-shadow: 0 10px 24px rgba(99, 102, 241, 0.35);
+    }
+
+    .auth-foot {
+      margin: 16px 0 0;
+      color: #94a3b8;
+      text-align: center;
+    }
+
+    .auth-foot a {
+      color: #a5b4fc;
+      text-decoration: none;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+<div class="auth-page">
+<div class="auth-card">
+  <h2 class="auth-title">Create an Account</h2>
+  <p class="auth-subtitle">Register to start building your shipment queue.</p>
+
+  <%
+    String msg = request.getParameter("msg");
+    if ("success".equals(msg)) {
+  %>
+    <p class="auth-message success">Registration successful. You can now login.</p>
+  <% } else if ("error".equals(msg)) { %>
+    <p class="auth-message error">Registration failed. Email may already exist.</p>
+  <% } %>
+
+  <form class="auth-form" action="${pageContext.request.contextPath}/register" method="post">
+    <input type="text" name="username" placeholder="Username" required>
+    <input type="email" name="email" placeholder="Email" required>
+    <input type="password" name="password" placeholder="Password" required>
+    <button class="auth-btn" type="submit">Register</button>
+
+    <p class="auth-foot">Already have an account? <a href="${pageContext.request.contextPath}/login.jsp">Login here</a></p>
+  </form>
+</div>
+</div>
 </body>
 </html>
