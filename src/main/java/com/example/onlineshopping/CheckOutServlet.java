@@ -4,11 +4,13 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import com.example.onlineshopping.model.*;
+import com.example.onlineshopping.dao.ProductDAO;
 import com.example.onlineshopping.dao.OrderDAO;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 @WebServlet(name = "CheckOutServlet", value = "/cart-check-out")
 public class CheckOutServlet extends HttpServlet {
@@ -26,6 +28,8 @@ public class CheckOutServlet extends HttpServlet {
             // 3. If everything exists, process the checkout
             if (cart_list != null && auth != null) {
                 OrderDAO oDao = new OrderDAO();
+                ProductDAO pDao = new ProductDAO();
+                double totalAmount = pDao.getTotalCartPrice(cart_list);
 
                 for (Cart c : cart_list) {
                     Order order = new Order();
@@ -39,9 +43,10 @@ public class CheckOutServlet extends HttpServlet {
 
                 // 4. CLEAR the cart session so it's ready for the next order
                 request.getSession().removeAttribute("cart-list");
-                response.sendRedirect("orders.jsp?status=success");
+                String totalText = String.format(Locale.US, "%.2f", totalAmount);
+                response.sendRedirect(request.getContextPath() + "/orders.jsp?status=success&total=" + totalText);
             } else {
-                response.sendRedirect("index.jsp");
+                response.sendRedirect(request.getContextPath() + "/index.jsp");
             }
         } catch (Exception e) {
             e.printStackTrace();

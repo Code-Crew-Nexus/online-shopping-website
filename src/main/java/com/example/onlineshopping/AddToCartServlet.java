@@ -42,6 +42,6 @@ public class AddToCartServlet extends HttpServlet {
             }
         }
         // Go back to products page with a success flag
-        response.sendRedirect("products?status=added");
+        response.sendRedirect(request.getContextPath() + "/products?status=added");
     }
 }
