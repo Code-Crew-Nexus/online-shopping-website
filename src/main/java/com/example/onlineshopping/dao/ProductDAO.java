@@ -17,7 +17,9 @@ public class ProductDAO {
                 Product p = new Product();
                 p.setId(rs.getInt("id"));
                 p.setName(rs.getString("name"));
+                p.setDescription(rs.getString("description"));
                 p.setPrice(rs.getDouble("price"));
+                p.setImageUrl(rs.getString("image_url"));
                 products.add(p);
             }
         } catch (SQLException e) { e.printStackTrace(); }
