@@ -1,9 +1,15 @@
+<div align="center">
+
 # Logistics & E-Commerce Management System
 
 ![Project Status: Active](https://img.shields.io/badge/status-active-brightgreen)
 ![Platform: Windows + Linux](https://img.shields.io/badge/platform-Windows%20%7C%20Linux-blue)
 ![Build: Maven WAR](https://img.shields.io/badge/build-Maven-orange)
 ![Java](https://img.shields.io/badge/Java-25-red)
+
+![GitHub forks](https://img.shields.io/github/forks/Code-Crew-Nexus/online-shopping-website?style=social)
+![GitHub stars](https://img.shields.io/github/stars/Code-Crew-Nexus/online-shopping-website?style=social)
+![GitHub watchers](https://img.shields.io/github/watchers/Code-Crew-Nexus/online-shopping-website?style=social)
 
 ---
 
@@ -16,6 +22,8 @@
 ![MySQL](https://img.shields.io/badge/MySQL-Connector%2FJ%209.6.0-4479A1?logo=mysql&logoColor=white)
 ![Maven](https://img.shields.io/badge/Maven-WAR-C71A36?logo=apachemaven&logoColor=white)
 ![Tomcat](https://img.shields.io/badge/Tomcat-10.1%2B-F8DC75?logo=apachetomcat&logoColor=black)
+
+</div>
 
 ---
 
