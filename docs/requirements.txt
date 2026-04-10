@@ -1,0 +1,6 @@
+# Python dependencies for docs automation scripts
+# Keep this file updated with `update_requirements.py`.
+
+pip>=24.0
+setuptools>=70.0
+wheel>=0.43.0
