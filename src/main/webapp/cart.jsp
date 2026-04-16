@@ -119,6 +119,36 @@
             font-size: 0.9rem;
         }
 
+        .qty-form {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .qty-input {
+            width: 70px;
+            padding: 6px 8px;
+            border-radius: 8px;
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            background: rgba(15, 23, 42, 0.75);
+            color: #f8fafc;
+        }
+
+        .update-btn {
+            border: 1px solid rgba(99, 102, 241, 0.5);
+            border-radius: 8px;
+            background: rgba(99, 102, 241, 0.2);
+            color: #c7d2fe;
+            padding: 6px 10px;
+            font-size: 0.86rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .update-btn:hover {
+            background: rgba(99, 102, 241, 0.32);
+        }
+
         .cart-summary {
             padding: 16px 20px 20px;
             display: flex;
@@ -161,6 +191,12 @@
 
         <% if ("removed".equals(status)) { %>
             <div class="notice">Item removed from your cart.</div>
+        <% } else if ("updated".equals(status)) { %>
+            <div class="notice">Quantity updated successfully.</div>
+        <% } else if ("invalid".equals(status)) { %>
+            <div class="notice">Please enter a valid quantity (minimum 1).</div>
+        <% } else if ("missing".equals(status)) { %>
+            <div class="notice">Cart item was not found. Refresh and try again.</div>
         <% } %>
 
         <% if (cartProducts != null && !cartProducts.isEmpty()) { %>
@@ -179,7 +215,13 @@
                     <tr>
                         <td><%= c.getName() %></td>
                         <td class="price">$<%= String.format("%.2f", c.getPrice()) %></td>
-                        <td><%= c.getQuantity() %></td>
+                        <td>
+                            <form class="qty-form" action="${pageContext.request.contextPath}/update-cart" method="post">
+                                <input type="hidden" name="id" value="<%= c.getId() %>">
+                                <input class="qty-input" type="number" name="quantity" min="1" value="<%= c.getQuantity() %>">
+                                <button class="update-btn" type="submit">Update</button>
+                            </form>
+                        </td>
                         <td class="price">$<%= String.format("%.2f", c.getPrice() * c.getQuantity()) %></td>
                         <td>
                             <a class="remove-btn" href="${pageContext.request.contextPath}/remove-from-cart?id=<%= c.getId() %>">Remove</a>
