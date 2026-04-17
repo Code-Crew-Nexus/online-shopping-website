@@ -8,6 +8,25 @@ import java.sql.SQLException;
 import java.sql.ResultSet;
 
 public class UserDAO {
+    public boolean emailExists(String email) {
+        if (email == null || email.trim().isEmpty()) {
+            return false;
+        }
+
+        String query = "SELECT 1 FROM users WHERE email = ? LIMIT 1";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pst = conn.prepareStatement(query)) {
+            pst.setString(1, email.trim());
+
+            try (ResultSet rs = pst.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException | IllegalStateException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public boolean registerUser(User user) {
         String query = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
 

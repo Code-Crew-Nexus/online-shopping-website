@@ -136,13 +136,17 @@ CREATE TABLE IF NOT EXISTS products (
 
 CREATE TABLE IF NOT EXISTS orders (
     id INT PRIMARY KEY AUTO_INCREMENT,
+    order_group_id VARCHAR(50) NOT NULL,
     p_id INT NOT NULL,
     u_id INT NOT NULL,
     o_quantity INT NOT NULL,
     o_date VARCHAR(20) NOT NULL,
     o_address VARCHAR(255),
+    order_status VARCHAR(20) DEFAULT 'Delivered',
     FOREIGN KEY (p_id) REFERENCES products(id),
-    FOREIGN KEY (u_id) REFERENCES users(id)
+    FOREIGN KEY (u_id) REFERENCES users(id),
+    INDEX idx_order_group (order_group_id),
+    INDEX idx_user_date (u_id, o_date)
 );
 """.strip()]
 

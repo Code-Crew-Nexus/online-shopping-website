@@ -16,8 +16,8 @@
     --bg-soft: #0f1b2d;
     --card-bg: rgba(20, 37, 60, 0.95);
     --text-main: #f0f6ff;
-    --text-muted: #a8c5e0;
-    --line: rgba(240, 246, 255, 0.08);
+    --text-muted: #c4d9ef;
+    --line: rgba(240, 246, 255, 0.16);
     --brand-a: #4db8d0;
     --brand-b: #ffd666;
     --ok: #7ee787;
@@ -98,6 +98,13 @@ a {
     align-items: center;
     padding: 0 3px;
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    color: transparent;
+    font-size: 0;
+    line-height: 0;
+    user-select: none;
+    appearance: none;
+    -webkit-appearance: none;
 }
 
 [data-theme-toggle]::before {
@@ -113,15 +120,23 @@ a {
     align-items: center;
     justify-content: center;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1;
 }
 
 [data-theme-toggle]::after {
-    content: '☀️';
+    content: '☀';
     position: absolute;
-    font-size: 14px;
-    left: 8px;
-    transition: opacity 0.3s ease;
+    font-size: 12px;
+    top: 50%;
+    left: 15px;
+    transform: translate(-50%, -50%);
+    transition: all 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
     opacity: 1;
+    color: #0d1f33;
+    font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", "Segoe UI Symbol", sans-serif;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.45);
+    pointer-events: none;
+    z-index: 2;
 }
 
 [data-theme-toggle][data-theme-state="dark"] {
@@ -135,9 +150,15 @@ a {
 }
 
 [data-theme-toggle][data-theme-state="dark"]::after {
-    content: '🌙';
-    left: auto;
-    right: 8px;
+    content: '☾';
+    left: 45px;
+    color: #f4f9ff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme-toggle]:focus-visible {
+    outline: 2px solid var(--brand-a);
+    outline-offset: 2px;
 }
 
 [data-theme-toggle]:hover {
@@ -220,7 +241,49 @@ input[type="number"] {
 :root[data-theme="dark"] input[type="email"],
 :root[data-theme="dark"] input[type="password"],
 :root[data-theme="dark"] input[type="number"] {
-    background: rgba(15, 27, 45, 0.72);
+    background: rgba(15, 27, 45, 0.86);
+}
+
+input::placeholder {
+    color: #6b8199;
+}
+
+input:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+:root[data-theme="dark"] input::placeholder {
+    color: #b7cde3;
+}
+
+:root[data-theme="dark"] .btn,
+:root[data-theme="dark"] .btn-link {
+    background: rgba(20, 37, 60, 0.9);
+    color: #eef6ff;
+}
+
+:root[data-theme="dark"] .btn.btn-brand {
+    background: linear-gradient(140deg, var(--brand-a), var(--brand-b));
+    color: #ffffff;
+    border-color: transparent;
+}
+
+:root[data-theme="dark"] .footer-note a {
+    color: #d6e8ff;
+    text-decoration-thickness: 2px;
+}
+
+:root[data-theme="dark"] .card h1,
+:root[data-theme="dark"] .card h2,
+:root[data-theme="dark"] .card h3,
+:root[data-theme="dark"] .price {
+    color: #f4f9ff;
+}
+
+:root[data-theme="dark"] .muted,
+:root[data-theme="dark"] .footer-note {
+    color: #c4d9ef;
 }
 
 .alert {
@@ -240,6 +303,44 @@ input[type="number"] {
     color: var(--danger);
     background: rgba(201, 42, 42, 0.12);
     border: 1px solid rgba(201, 42, 42, 0.38);
+}
+
+.field-feedback {
+    min-height: 18px;
+    margin: -2px 0 2px;
+    font-size: 0.86rem;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+.field-feedback.is-invalid {
+    color: var(--danger);
+}
+
+.field-feedback.is-valid {
+    color: var(--ok);
+}
+
+.field-feedback.is-warning {
+    color: #c77d00;
+}
+
+.field-feedback a {
+    color: inherit;
+    font-weight: 800;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 2px;
+}
+
+.field-feedback a:hover {
+    opacity: 0.9;
+}
+
+.field-hint {
+    margin: -4px 0 2px;
+    font-size: 0.84rem;
+    color: var(--text-muted);
 }
 
 .products-grid {

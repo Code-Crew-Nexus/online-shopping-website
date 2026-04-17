@@ -45,6 +45,22 @@ This repository is packaged as a Maven WAR project named `OnlineShopping` (artif
 
 ---
 
+## New Features and Updates (Latest)
+
+- Implemented grouped order flow using a single `order_group_id` for each checkout.
+- Added order status support with `order_status` in the orders schema.
+- Enhanced `orders.jsp` invoice flow with corrected order-group actions.
+- Added invoice PDF action support in Orders page modal flow.
+- Improved light/dark mode toggle behavior and icon visibility.
+- Added theme-aware logo switching with dark-mode logo asset support.
+- Added `CheckEmailServlet` to support live duplicate-email checks.
+- Added reset utilities to clear user-generated data safely:
+	- `assets/scripts/reset-database.ps1` (PowerShell)
+	- `assets/scripts/reset_database.py` (Python)
+- Synced setup schema in `setup_database.py` with current application schema.
+
+---
+
 ## Updated Project Structure
 
 ```text
@@ -191,6 +207,22 @@ WAR output:
 3. Add products to cart
 4. Checkout
 5. Verify grouped orders and invoice view
+6. Try registering with an existing email and confirm the app redirects you to sign in with the email prefilled.
+
+### 7. Optional: reset user-generated data
+
+Use this when you want a clean testing state without dropping the full schema.
+
+```powershell
+# Preview SQL only
+.\assets\scripts\reset-database.ps1 -DryRun
+
+# Clear orders + USER accounts
+.\assets\scripts\reset-database.ps1 -Force
+
+# Clear orders + all users (including admins)
+.\assets\scripts\reset-database.ps1 -IncludeAdmins -Force
+```
 
 ## Run Guide: Linux (Arch Preferred, Detailed)
 
@@ -266,6 +298,26 @@ Open:
 
 - `http://localhost:8080/flipzon-1.0-SNAPSHOT/index.jsp`
 
+### 8. Optional: reset user-generated data
+
+```bash
+# Preview SQL only
+python assets/scripts/reset_database.py --dry-run
+
+# Clear orders + USER accounts
+python assets/scripts/reset_database.py --force
+
+# Clear orders + all users (including admins)
+python assets/scripts/reset_database.py --include-admins --force
+```
+
+## Reset Script Notes
+
+- Both reset scripts delete all rows from `orders`.
+- By default, only users with role `USER` are deleted from `users`.
+- Admin accounts are retained unless include-admins is enabled.
+- Auto-increment values for `orders` and `users` are reset.
+
 ## Endpoint Summary
 
 - `POST /register`
@@ -314,6 +366,29 @@ Open:
 - Ensure MySQL service is up.
 - Check environment variables.
 - Re-run setup script.
+
+### Duplicate email redirect
+
+- If an email is already registered, the app shows a prompt asking whether to sign in.
+- Choosing OK redirects to the login page with the email prefilled.
+- If the browser blocks popups, the login redirect still happens through the server fallback.
+
+## Recent Additions
+
+- Live email validation is now enabled on both register and login screens.
+- The password field stays locked until the email becomes valid.
+- Registration checks for an existing email before creating a duplicate account.
+- Existing accounts are redirected to sign in with the email already filled in.
+- Terra Ceramic Mug Set and Luna Portable Projector now use local SVG thumbnails.
+- `CheckEmailServlet` powers the live duplicate-email check used by the register form.
+
+## Cross-Check Updates (Latest QA Pass)
+
+- Fixed browser-side email `pattern` parsing in `index.jsp` and `login.jsp` by using valid HTML regex escaping.
+- Confirmed checkout compatibility for mixed/legacy database states via runtime schema guards and product upsert fallback in `OrderDAO`.
+- Confirmed dynamic product ordering on each page load (server shuffle in `ProductServlet` + render-time shuffle in `products.jsp`).
+- Updated login UX so the existing-account warning (`msg=exists`) hides immediately when password entry starts.
+- Re-validated project health with Maven (`validate` and `clean package`) after these updates.
 
 ---
 

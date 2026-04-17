@@ -1,0 +1,21 @@
+<svg width="470" height="130" viewBox="0 0 470 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="core" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0D47A1"/>
+      <stop offset="100%" stop-color="#00897B"/>
+    </linearGradient>
+    <linearGradient id="flare" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#EF6C00"/>
+      <stop offset="100%" stop-color="#FFCA28"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="2" y="2" width="126" height="126" rx="28" fill="url(#core)"/>
+  <path d="M28 92L49 36H67L46 92H28Z" fill="white"/>
+  <path d="M61 92V36H79L103 69V36H118V92H100L76 59V92H61Z" fill="white"/>
+  <path d="M24 101H106" stroke="url(#flare)" stroke-width="7" stroke-linecap="round"/>
+
+  <text x="146" y="48" fill="#EAF4FF" font-family="Segoe UI, Arial, sans-serif" font-size="26" font-weight="800">FlipZon</text>
+  <text x="146" y="76" fill="#D6E8FB" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">Krishna | Rishit | Karthik | Rayain</text>
+  <text x="146" y="100" fill="#C0DAF3" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">Professional team-built shopping experience</text>
+</svg>

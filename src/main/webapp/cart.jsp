@@ -44,7 +44,7 @@
         <% } else if ("missing".equals(status)) { %>
             <p class="alert alert-err">Cart item was not found. Refresh and try again.</p>
         <% } else if ("checkout-error".equals(status)) { %>
-            <p class="alert alert-err">Checkout failed. Run the database setup script so the `products` table is seeded, then try again.</p>
+            <p class="alert alert-err">Checkout failed due to a temporary order processing issue. Please try again.</p>
         <% } %>
 
         <% if (cartProducts != null && !cartProducts.isEmpty()) { %>

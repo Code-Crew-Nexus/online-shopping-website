@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800" role="img" aria-label="Terra Ceramic Mug Set">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f3e7d3"/>
+      <stop offset="100%" stop-color="#d8b38d"/>
+    </linearGradient>
+    <linearGradient id="mug" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#ead7c3"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="800" rx="72" fill="url(#bg)"/>
+  <circle cx="190" cy="210" r="58" fill="#ffffff" opacity="0.28"/>
+  <circle cx="610" cy="170" r="42" fill="#ffffff" opacity="0.18"/>
+  <g transform="translate(130 220)">
+    <rect x="0" y="70" width="155" height="190" rx="26" fill="url(#mug)" stroke="#b57f55" stroke-width="10"/>
+    <path d="M155 110c48 0 78 30 78 70s-30 70-78 70" fill="none" stroke="#b57f55" stroke-width="22" stroke-linecap="round"/>
+    <path d="M174 122c26 0 42 16 42 36s-16 36-42 36" fill="none" stroke="#ead7c3" stroke-width="14" stroke-linecap="round"/>
+  </g>
+  <g transform="translate(340 180)">
+    <rect x="0" y="90" width="180" height="220" rx="30" fill="url(#mug)" stroke="#b57f55" stroke-width="10"/>
+    <path d="M180 132c54 0 88 33 88 78s-34 78-88 78" fill="none" stroke="#b57f55" stroke-width="22" stroke-linecap="round"/>
+    <path d="M202 145c29 0 48 17 48 43s-19 43-48 43" fill="none" stroke="#ead7c3" stroke-width="14" stroke-linecap="round"/>
+  </g>
+  <g transform="translate(580 250)">
+    <rect x="0" y="55" width="135" height="165" rx="24" fill="url(#mug)" stroke="#b57f55" stroke-width="10"/>
+    <path d="M135 92c41 0 66 25 66 58s-25 58-66 58" fill="none" stroke="#b57f55" stroke-width="20" stroke-linecap="round"/>
+  </g>
+  <text x="400" y="680" text-anchor="middle" font-family="Trebuchet MS, Segoe UI, sans-serif" font-size="48" font-weight="700" fill="#7a4f2a">Terra Ceramic Mug Set</text>
+</svg>

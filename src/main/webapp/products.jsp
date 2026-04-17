@@ -36,7 +36,12 @@
   </div>
 
   <div class="logo-shell" style="margin-bottom: 16px; display: inline-block;">
-    <img src="${pageContext.request.contextPath}/assets/images/flipzon-logo.svg" alt="FlipZon Logo">
+    <img
+      src="${pageContext.request.contextPath}/assets/images/flipzon-logo.svg"
+      alt="FlipZon Logo"
+      data-theme-logo
+      data-logo-light="${pageContext.request.contextPath}/assets/images/flipzon-logo.svg"
+      data-logo-dark="${pageContext.request.contextPath}/assets/images/flipzon-logo-dark.svg">
   </div>
 
   <div class="card" style="margin-bottom: 16px;">
@@ -88,6 +93,30 @@
   </div>
 </div>
 <script src="${pageContext.request.contextPath}/assets/js/theme.js"></script>
+<script>
+  (function () {
+    var grid = document.querySelector('.products-grid');
+    if (!grid) {
+      return;
+    }
+
+    var cards = Array.prototype.slice.call(grid.querySelectorAll('.product-card'));
+    if (cards.length < 2) {
+      return;
+    }
+
+    for (var i = cards.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = cards[i];
+      cards[i] = cards[j];
+      cards[j] = tmp;
+    }
+
+    cards.forEach(function (card) {
+      grid.appendChild(card);
+    });
+  })();
+</script>
 
 </body>
 </html>

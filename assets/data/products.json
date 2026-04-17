@@ -25,7 +25,7 @@
     "name": "Terra Ceramic Mug Set",
     "description": "Hand-finished premium ceramic mugs, set of four with matte glaze.",
     "price": 34.25,
-    "imageUrl": "https://images.unsplash.com/photo-1505394033641-40c6ad1178e7?auto=format&fit=crop&w=400&h=400&q=80"
+    "imageUrl": "assets/images/terra-ceramic-mug-set.svg"
   },
   {
     "id": 5,
@@ -60,7 +60,7 @@
     "name": "Luna Portable Projector",
     "description": "4K resolution with 1000 lumens brightness, built-in 10W stereo speakers.",
     "price": 349.99,
-    "imageUrl": "https://images.unsplash.com/photo-1559056199-641a0ac8b8d5?auto=format&fit=crop&w=400&h=400&q=80"
+    "imageUrl": "assets/images/luna-portable-projector.svg"
   },
   {
     "id": 10,

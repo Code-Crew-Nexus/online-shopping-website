@@ -34,6 +34,11 @@ public class CheckOutServlet extends HttpServlet {
 
             // 4. If everything exists, process the checkout
             if (cart_list != null && auth != null) {
+                if (cart_list.isEmpty()) {
+                    response.sendRedirect(request.getContextPath() + "/cart.jsp");
+                    return;
+                }
+
                 OrderDAO oDao = new OrderDAO();
                 ProductDAO pDao = new ProductDAO();
                 double totalAmount = pDao.getTotalCartPrice(cart_list);
@@ -64,6 +69,7 @@ public class CheckOutServlet extends HttpServlet {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            response.sendRedirect(request.getContextPath() + "/cart.jsp?status=checkout-error");
         }
     }
 }

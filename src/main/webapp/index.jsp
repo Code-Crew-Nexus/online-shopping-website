@@ -30,7 +30,12 @@
     <div class="hero">
       <div class="card stack">
         <div class="logo-shell">
-          <img src="${pageContext.request.contextPath}/assets/images/flipzon-logo.svg" alt="FlipZon Logo">
+          <img
+            src="${pageContext.request.contextPath}/assets/images/flipzon-logo.svg"
+            alt="FlipZon Logo"
+            data-theme-logo
+            data-logo-light="${pageContext.request.contextPath}/assets/images/flipzon-logo.svg"
+            data-logo-dark="${pageContext.request.contextPath}/assets/images/flipzon-logo-dark.svg">
         </div>
         <h1>Welcome Back, <%= auth.getUsername() %>!</h1>
         <p class="muted">Your premium shopping destination awaits. Discover curated products with seamless checkout.</p>
@@ -53,7 +58,12 @@
     <section class="hero">
       <div class="card stack">
         <div class="logo-shell">
-          <img src="${pageContext.request.contextPath}/assets/images/flipzon-logo.svg" alt="FlipZon Logo">
+          <img
+            src="${pageContext.request.contextPath}/assets/images/flipzon-logo.svg"
+            alt="FlipZon Logo"
+            data-theme-logo
+            data-logo-light="${pageContext.request.contextPath}/assets/images/flipzon-logo.svg"
+            data-logo-dark="${pageContext.request.contextPath}/assets/images/flipzon-logo-dark.svg">
         </div>
         <h1>FlipZon</h1>
         <p class="muted">Premium marketplace for everything you need</p>
@@ -62,6 +72,8 @@
         </p>
         <% if ("success".equals(msg)) { %>
           <p class="alert alert-ok">✓ Registration successful. You can login now.</p>
+        <% } else if ("invalid-email".equals(msg)) { %>
+          <p class="alert alert-err">✗ Please enter a valid email address.</p>
         <% } else if ("error".equals(msg)) { %>
           <p class="alert alert-err">✗ Registration failed. Email may already exist.</p>
         <% } %>
@@ -73,9 +85,18 @@
 
         <form class="auth-form" action="${pageContext.request.contextPath}/register" method="post">
           <input type="text" name="username" placeholder="Full name" required>
-          <input type="email" name="email" placeholder="Email address" required>
-          <input type="password" name="password" placeholder="Password (min 6 characters)" required minlength="6">
-          <button class="btn btn-brand" type="submit">Get Started</button>
+          <input
+            type="email"
+            name="email"
+            placeholder="Email address"
+            required
+            autocomplete="email"
+            pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}"
+            title="Enter a valid email address like name@example.com"
+            data-register-email>
+          <p class="field-feedback" data-register-email-feedback aria-live="polite"></p>
+          <input type="password" name="password" placeholder="Password (min 6 characters)" required minlength="6" autocomplete="new-password" data-register-password>
+          <button class="btn btn-brand" type="submit" data-register-submit>Get Started</button>
         </form>
 
         <p class="footer-note">Already a member? <a href="${pageContext.request.contextPath}/login.jsp">Sign in here</a>.</p>

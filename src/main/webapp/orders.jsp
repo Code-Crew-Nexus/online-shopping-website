@@ -512,9 +512,9 @@
                     </div>
 
                     <div class="invoice-actions">
-                        <button class="btn btn-small btn-small-brand" onclick="printInvoice(<%= orderId %>)">🖨️ Print</button>
-                        <button class="btn btn-small btn-small-brand" onclick="downloadInvoice(<%= orderId %>)">⬇️ Download</button>
-                        <button class="btn btn-small" onclick="closeInvoice(<%= orderId %>)">Close</button>
+                        <button class="btn btn-small btn-small-brand" onclick="printInvoice('<%= orderGroupId %>')">🖨️ Print</button>
+                        <button class="btn btn-small btn-small-brand" onclick="downloadInvoiceAsPDF('<%= orderGroupId %>')">⬇️ Download</button>
+                        <button class="btn btn-small" onclick="closeInvoice('<%= orderGroupId %>')">Close</button>
                     </div>
                 </div>
             </div>

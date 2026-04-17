@@ -21,6 +21,7 @@ replay_pid*
 *.iml
 *.ipr
 *.iws
+.run/
 
 # VS Code
 .vscode/
@@ -68,6 +69,24 @@ ENV/
 .env
 .env.*
 *.properties.local
+.python-version
+
+# Test, coverage, and reports
+.coverage
+.coverage.*
+coverage/
+htmlcov/
+*.coverage
+reports/
+
+# Local runtime files
+*.pid
+*.seed
+*.stackdump
+*.sql
+*.dump
+*.orig
+*.rej
 
 # Local database override files
 assets/scripts/database.local.txt
