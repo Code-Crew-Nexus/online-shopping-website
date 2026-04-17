@@ -1,0 +1,114 @@
+[
+  {
+    "id": 1,
+    "name": "Aero Messenger Backpack",
+    "description": "Water-resistant smart backpack with USB charging port and anti-theft pocket.",
+    "price": 79.99,
+    "imageUrl": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=400&h=400&q=80"
+  },
+  {
+    "id": 2,
+    "name": "Nova Wireless Earbuds",
+    "description": "Active noise cancellation, 28-hour battery life, and ultra-low latency mode.",
+    "price": 119.00,
+    "imageUrl": "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=400&h=400&q=80"
+  },
+  {
+    "id": 3,
+    "name": "Luma Desk Lamp",
+    "description": "Adjustable LED desk lamp with warm-to-cool light presets and touch controls.",
+    "price": 45.50,
+    "imageUrl": "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=400&h=400&q=80"
+  },
+  {
+    "id": 4,
+    "name": "Terra Ceramic Mug Set",
+    "description": "Hand-finished premium ceramic mugs, set of four with matte glaze.",
+    "price": 34.25,
+    "imageUrl": "https://images.unsplash.com/photo-1505394033641-40c6ad1178e7?auto=format&fit=crop&w=400&h=400&q=80"
+  },
+  {
+    "id": 5,
+    "name": "Pulse Mechanical Keyboard",
+    "description": "Hot-swappable switches, RGB backlight, and compact 75% layout.",
+    "price": 139.90,
+    "imageUrl": "https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?auto=format&fit=crop&w=400&h=400&q=80"
+  },
+  {
+    "id": 6,
+    "name": "Drift Running Shoes",
+    "description": "Lightweight cushioning, breathable knit upper, and durable traction sole.",
+    "price": 99.95,
+    "imageUrl": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=400&h=400&q=80"
+  },
+  {
+    "id": 7,
+    "name": "Summit Bottle 1L",
+    "description": "Insulated stainless bottle keeps drinks cold for 24 hours.",
+    "price": 27.99,
+    "imageUrl": "https://images.unsplash.com/photo-1602143407151-7111542de6e8?auto=format&fit=crop&w=400&h=400&q=80"
+  },
+  {
+    "id": 8,
+    "name": "FrameX Smart Watch",
+    "description": "Fitness tracking, heart-rate monitor, and five-day battery backup.",
+    "price": 189.00,
+    "imageUrl": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=400&h=400&q=80"
+  },
+  {
+    "id": 9,
+    "name": "Luna Portable Projector",
+    "description": "4K resolution with 1000 lumens brightness, built-in 10W stereo speakers.",
+    "price": 349.99,
+    "imageUrl": "https://images.unsplash.com/photo-1559056199-641a0ac8b8d5?auto=format&fit=crop&w=400&h=400&q=80"
+  },
+  {
+    "id": 10,
+    "name": "Prism Webcam 1080p",
+    "description": "Ultra HD with auto-focus, wide 110° field of view, and noise reduction mic.",
+    "price": 89.99,
+    "imageUrl": "https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&w=400&h=400&q=80"
+  },
+  {
+    "id": 11,
+    "name": "Zenith USB-C Hub",
+    "description": "7-in-1 multiport hub with 4K HDMI, 3x USB 3.0, SD card reader.",
+    "price": 59.99,
+    "imageUrl": "https://images.unsplash.com/photo-1625948515291-69613efd103f?auto=format&fit=crop&w=400&h=400&q=80"
+  },
+  {
+    "id": 12,
+    "name": "Serenity Yoga Mat",
+    "description": "6mm premium natural rubber, eco-friendly, non-slip TPE surface.",
+    "price": 52.00,
+    "imageUrl": "https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?auto=format&fit=crop&w=400&h=400&q=80"
+  },
+  {
+    "id": 13,
+    "name": "Velocity Portable Charger",
+    "description": "50,000mAh capacity, dual USB-C ports, 65W ultra-fast charging.",
+    "price": 99.99,
+    "imageUrl": "https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?auto=format&fit=crop&w=400&h=400&q=80"
+  },
+  {
+    "id": 14,
+    "name": "Harmony Bluetooth Speaker",
+    "description": "360° sound, 20-hour battery, waterproof IPX7 rating.",
+    "price": 129.99,
+    "imageUrl": "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=400&h=400&q=80"
+  },
+  {
+    "id": 15,
+    "name": "Infinite Gaming Mouse",
+    "description": "12,000 DPI sensor, 8 programmable buttons, RGB lighting.",
+    "price": 49.99,
+    "imageUrl": "https://images.unsplash.com/photo-1527814050087-3793815479db?auto=format&fit=crop&w=400&h=400&q=80"
+  },
+  {
+    "id": 16,
+    "name": "Crystal Phone Stand",
+    "description": "Adjustable aluminum stand, compatible with all phones and tablets.",
+    "price": 24.99,
+    "imageUrl": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=400&h=400&q=80"
+  }
+]

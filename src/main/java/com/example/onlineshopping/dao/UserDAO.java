@@ -12,11 +12,6 @@ public class UserDAO {
         String query = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
 
         try (Connection conn = DBConnection.getConnection()) {
-            if (conn == null) {
-                System.err.println("UserDAO: Connection is NULL. Check DB credentials.");
-                return false;
-            }
-
             try (PreparedStatement pst = conn.prepareStatement(query)) {
                 pst.setString(1, user.getUsername());
                 pst.setString(2, user.getEmail());
@@ -24,7 +19,7 @@ public class UserDAO {
 
                 return pst.executeUpdate() > 0;
             }
-        } catch (SQLException e) {
+        } catch (SQLException | IllegalStateException e) {
             e.printStackTrace();
             return false;
         }
@@ -49,8 +44,7 @@ public class UserDAO {
                     user.setRole(rs.getString("role"));
                 }
             }
-        } catch (SQLException e) {
-            // Log the error properly for debugging
+        } catch (SQLException | IllegalStateException e) {
             e.printStackTrace();
         }
         return user;

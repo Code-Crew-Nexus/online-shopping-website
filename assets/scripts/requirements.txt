@@ -1,4 +1,4 @@
-# Python dependencies for docs automation scripts
+# Python dependencies for assets/scripts automation scripts
 # Keep this file updated with `update_requirements.py`.
 
 pip>=24.0

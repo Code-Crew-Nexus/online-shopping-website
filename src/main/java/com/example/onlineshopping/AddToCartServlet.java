@@ -14,6 +14,7 @@ public class AddToCartServlet extends HttpServlet {
         HttpSession session = request.getSession();
 
         // 1. Try to get existing cart from session
+        @SuppressWarnings("unchecked")
         ArrayList<Cart> cartList = (ArrayList<Cart>) session.getAttribute("cart-list");
 
         // 2. If no cart exists, create a new one

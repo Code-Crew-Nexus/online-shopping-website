@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Install documentation helper dependencies from docs/requirements.txt."""
+"""Install helper dependencies from assets/scripts/requirements.txt."""
 
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ from pathlib import Path
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Install Python dependencies required by docs automation scripts.")
+        description="Install Python dependencies required by assets/scripts automation scripts.")
     parser.add_argument(
         "--requirements",
         type=Path,

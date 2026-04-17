@@ -33,6 +33,7 @@ public class UpdateCartServlet extends HttpServlet {
             }
 
             HttpSession session = request.getSession();
+            @SuppressWarnings("unchecked")
             ArrayList<Cart> cartList = (ArrayList<Cart>) session.getAttribute("cart-list");
 
             if (cartList == null || cartList.isEmpty()) {

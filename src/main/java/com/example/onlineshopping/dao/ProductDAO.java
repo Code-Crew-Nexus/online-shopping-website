@@ -1,11 +1,13 @@
 package com.example.onlineshopping.dao;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.example.onlineshopping.model.Cart;
 import com.example.onlineshopping.model.Product;
 import com.example.onlineshopping.util.DBConnection;
 
+import java.io.InputStream;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -13,7 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProductDAO {
+    private static final String PRODUCTS_JSON_PATH = "data/products.json";
+
     public List<Product> getAllProducts() {
+        List<Product> fromJson = getProductsFromJson();
+        if (!fromJson.isEmpty()) {
+            return fromJson;
+        }
+
         List<Product> products = new ArrayList<>();
         String query = "SELECT * FROM products";
         try (Connection conn = DBConnection.getConnection();
@@ -28,10 +37,19 @@ public class ProductDAO {
                 p.setImageUrl(rs.getString("image_url"));
                 products.add(p);
             }
-        } catch (SQLException e) {
+        } catch (SQLException | IllegalStateException e) {
             e.printStackTrace();
         }
         return products;
+    }
+
+    public Product getProductById(int id) {
+        for (Product p : getAllProducts()) {
+            if (p.getId() == id) {
+                return p;
+            }
+        }
+        return null;
     }
 
     public List<Cart> getCartProducts(ArrayList<Cart> cartList) {
@@ -40,28 +58,20 @@ public class ProductDAO {
             return products;
         }
 
-        String query = "SELECT * FROM products WHERE id = ?";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement pst = conn.prepareStatement(query)) {
-
-            for (Cart cartItem : cartList) {
-                pst.setInt(1, cartItem.getId());
-                try (ResultSet rs = pst.executeQuery()) {
-                    if (rs.next()) {
-                        Cart row = new Cart();
-                        row.setId(rs.getInt("id"));
-                        row.setName(rs.getString("name"));
-                        row.setDescription(rs.getString("description"));
-                        row.setPrice(rs.getDouble("price"));
-                        row.setImageUrl(rs.getString("image_url"));
-                        row.setQuantity(cartItem.getQuantity());
-                        products.add(row);
-                    }
-                }
+        for (Cart cartItem : cartList) {
+            Product product = getProductById(cartItem.getId());
+            if (product != null) {
+                Cart row = new Cart();
+                row.setId(product.getId());
+                row.setName(product.getName());
+                row.setDescription(product.getDescription());
+                row.setPrice(product.getPrice());
+                row.setImageUrl(product.getImageUrl());
+                row.setQuantity(cartItem.getQuantity());
+                products.add(row);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
+
         return products;
     }
 
@@ -71,5 +81,21 @@ public class ProductDAO {
             total += item.getPrice() * item.getQuantity();
         }
         return total;
+    }
+
+    private List<Product> getProductsFromJson() {
+        try (InputStream input = Thread.currentThread()
+                .getContextClassLoader()
+                .getResourceAsStream(PRODUCTS_JSON_PATH)) {
+            if (input == null) {
+                return new ArrayList<>();
+            }
+
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.readValue(input, new TypeReference<List<Product>>() {});
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
     }
 }

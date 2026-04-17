@@ -1,135 +1,714 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="java.util.Map" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.LinkedHashMap" %>
+<%@ page import="com.example.onlineshopping.model.Order" %>
 <%@ page import="com.example.onlineshopping.model.User" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Date" %>
+<%@ page import="java.util.Calendar" %>
 <%
     User auth = (User) session.getAttribute("authUser");
+    if (auth == null) {
+        response.sendRedirect(request.getContextPath() + "/login.jsp");
+        return;
+    }
+
+    Map<String, List<Order>> groupedOrders = (Map<String, List<Order>>) request.getAttribute("groupedOrders");
+    if (groupedOrders == null) {
+        groupedOrders = new LinkedHashMap<>();
+    }
+
     String status = request.getParameter("status");
-    String total = request.getParameter("total");
     boolean success = "success".equalsIgnoreCase(status);
-    boolean neutral = (status == null || status.trim().isEmpty());
+    
+    SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy");
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 %>
 <html>
-    <head>
-        <title>Shipment Confirmation</title>
-        <style>
-            html, body {
-                margin: 0;
-                padding: 0;
-                min-height: 100vh;
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                background: radial-gradient(circle at top, #1e293b 0%, #0b1025 45%, #060b1b 100%);
-                color: #e2e8f0;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
+<head>
+    <title>Orders - FlipZon</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
+    <style>
+        .order-section {
+            margin-bottom: 24px;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 20px;
+            background: var(--card-bg);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+        }
 
-            .confirm-card {
-                width: min(92vw, 680px);
-                border: 1px solid rgba(148, 163, 184, 0.2);
-                background: rgba(15, 23, 42, 0.88);
-                box-shadow: 0 24px 60px rgba(2, 6, 23, 0.6);
-                border-radius: 20px;
-                padding: 32px;
-            }
+        .order-section:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
 
-            .badge {
-                display: inline-flex;
-                align-items: center;
-                gap: 8px;
-                padding: 8px 14px;
-                border-radius: 999px;
-                font-weight: 700;
-                font-size: 0.9rem;
-                margin-bottom: 14px;
-            }
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--line);
+        }
 
-            .badge.success {
-                color: #10b981;
-                background: rgba(16, 185, 129, 0.12);
-                border: 1px solid rgba(16, 185, 129, 0.35);
-            }
+        .order-id-section {
+            flex: 1;
+        }
 
-            .badge.neutral {
-                color: #f59e0b;
-                background: rgba(245, 158, 11, 0.12);
-                border: 1px solid rgba(245, 158, 11, 0.35);
-            }
+        .order-id {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--brand-a);
+            margin: 0 0 4px 0;
+        }
 
-            h2 {
-                margin: 0 0 10px 0;
-                font-size: 1.9rem;
-                color: #f8fafc;
-            }
+        .order-date {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin: 0;
+        }
 
-            p {
-                margin: 0;
-                line-height: 1.65;
-                color: #cbd5e1;
-            }
+        .order-status-badge {
+            display: inline-block;
+            padding: 8px 14px;
+            background: var(--ok);
+            color: white;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
 
-            .muted {
-                margin-top: 14px;
-                font-size: 0.95rem;
-                color: #94a3b8;
-            }
+        .order-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
 
-            .actions {
-                margin-top: 26px;
-                display: flex;
-                flex-wrap: wrap;
+        .btn-small {
+            padding: 8px 12px;
+            font-size: 13px;
+            border-radius: 8px;
+            text-decoration: none;
+            border: 1px solid var(--line);
+            background: var(--card-bg);
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-small:hover {
+            background: var(--brand-a);
+            color: white;
+            border-color: var(--brand-a);
+            transform: translateY(-1px);
+        }
+
+        .btn-small-brand {
+            background: var(--brand-a);
+            color: white;
+            border-color: var(--brand-a);
+        }
+
+        .items-grid {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .order-item {
+            display: grid;
+            grid-template-columns: 80px 1fr auto;
+            gap: 16px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            align-items: center;
+        }
+
+        :root[data-theme="dark"] .order-item {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .item-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .item-info h4 {
+            margin: 0 0 4px 0;
+            font-size: 15px;
+            color: var(--text-main);
+        }
+
+        .item-info p {
+            margin: 0;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .item-price {
+            text-align: right;
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--brand-b);
+        }
+
+        .order-summary {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            padding: 16px;
+            background: rgba(11, 114, 133, 0.06);
+            border-radius: 10px;
+            margin-top: 16px;
+        }
+
+        :root[data-theme="dark"] .order-summary {
+            background: rgba(77, 184, 208, 0.08);
+        }
+
+        .summary-item {
+            text-align: center;
+        }
+
+        .summary-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .summary-value {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--brand-a);
+        }
+
+        .invoice-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .invoice-modal.show {
+            display: flex;
+        }
+
+        .invoice-content {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 600px;
+            width: 95%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .invoice-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--line);
+        }
+
+        .invoice-header h2 {
+            margin: 0;
+            color: var(--brand-a);
+        }
+
+        .invoice-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .invoice-detail-block h4 {
+            margin: 0 0 8px 0;
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .invoice-detail-block p {
+            margin: 4px 0;
+            font-size: 14px;
+        }
+
+        .invoice-items {
+            margin-bottom: 20px;
+        }
+
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .invoice-table th {
+            text-align: left;
+            padding: 10px 0;
+            border-bottom: 2px solid var(--line);
+            font-weight: 700;
+            color: var(--text-muted);
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .invoice-table td {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .invoice-total {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 20px;
+            padding: 20px 0;
+            border-top: 2px solid var(--line);
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .invoice-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--line);
+        }
+
+        .close-invoice {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--line);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            color: var(--text-main);
+            transition: all 0.2s ease;
+        }
+
+        .close-invoice:hover {
+            background: var(--brand-a);
+            color: white;
+        }
+
+        @media print {
+            .close-invoice, .invoice-actions {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .order-header {
+                flex-direction: column;
+                align-items: flex-start;
                 gap: 12px;
             }
 
-            .btn {
-                text-decoration: none;
-                color: #ffffff;
-                padding: 10px 16px;
-                border-radius: 10px;
-                border: 1px solid transparent;
-                font-weight: 600;
+            .order-summary {
+                grid-template-columns: repeat(2, 1fr);
             }
 
-            .btn-primary {
-                background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-                box-shadow: 0 8px 24px rgba(99, 102, 241, 0.35);
+            .invoice-details {
+                grid-template-columns: 1fr;
             }
-
-            .btn-secondary {
-                background: rgba(148, 163, 184, 0.16);
-                border-color: rgba(148, 163, 184, 0.4);
-            }
-        </style>
-    </head>
+        }
+    </style>
+</head>
 <body>
-    <div class="confirm-card">
-        <% if (success) { %>
-            <div class="badge success">✔ Shipment Confirmed</div>
-            <h2>Your order is successfully placed</h2>
-            <p>Your items are now logged in the shipping system and ready for processing.</p>
-            <% if (total != null && !total.trim().isEmpty()) { %>
-                <p class="muted">Total charged: <strong>$<%= total %></strong></p>
-            <% } %>
-            <p class="muted">You can continue browsing and add more shipping units anytime.</p>
-        <% } else if (neutral) { %>
-            <div class="badge neutral">ℹ Confirmation Page</div>
-            <h2>No recent shipment status found</h2>
-            <p>You opened this page directly, so there is no checkout status to show.</p>
-            <p class="muted">Use the catalog to continue shopping or go to cart to review items.</p>
-        <% } else { %>
-            <div class="badge neutral">⚠ Status: <%= status %></div>
-            <h2>Shipment update received</h2>
-            <p>We got a non-standard status from checkout flow. Please review your cart and try again if needed.</p>
-        <% } %>
+<div class="layout">
+    <div class="top-nav">
+        <div class="links">
+            <a class="btn-link" href="${pageContext.request.contextPath}/index.jsp">Home</a>
+            <a class="btn-link" href="${pageContext.request.contextPath}/products">Products</a>
+            <a class="btn-link" href="${pageContext.request.contextPath}/cart.jsp">Cart</a>
+            <a class="btn-link" href="${pageContext.request.contextPath}/orders">Orders</a>
+            <a class="btn-link btn-danger" href="${pageContext.request.contextPath}/logout">Logout</a>
+        </div>
+        <button class="btn" type="button" data-theme-toggle>Switch Mode</button>
+    </div>
 
-        <div class="actions">
-            <a class="btn btn-primary" href="${pageContext.request.contextPath}/products">Order More Items</a>
-            <a class="btn btn-secondary" href="${pageContext.request.contextPath}/cart.jsp">View Cart</a>
-            <% if (auth == null) { %>
-                <a class="btn btn-secondary" href="${pageContext.request.contextPath}/login.jsp">Login</a>
-            <% } else { %>
-                <a class="btn btn-secondary" href="${pageContext.request.contextPath}/logout">Logout</a>
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <div>
+                <h2>📦 Order History</h2>
+                <p class="muted">Track all your orders and manage invoices</p>
+            </div>
+            <% if (!groupedOrders.isEmpty()) { %>
+            <form method="post" action="${pageContext.request.contextPath}/orders" style="display: inline;">
+                <button type="button" class="btn btn-danger" onclick="clearAllOrders()" style="margin: 0;">
+                    🗑️ Clear All Delivered Orders
+                </button>
+            </form>
             <% } %>
         </div>
+
+        <% if (success && request.getParameter("total") != null) { %>
+            <p class="alert alert-ok">
+                ✓ Order placed successfully! Total: $<%= request.getParameter("total") %>
+            </p>
+        <% } %>
+
+        <% if (groupedOrders.isEmpty()) { %>
+            <p class="muted">You haven't placed any orders yet.</p>
+            <a class="btn btn-brand" href="${pageContext.request.contextPath}/products">Start Shopping</a>
+        <% } else { %>
+            <% for (Map.Entry<String, List<Order>> entry : groupedOrders.entrySet()) {
+                String orderGroupId = entry.getKey();
+                List<Order> items = entry.getValue();
+                
+                double orderTotal = 0;
+                Date orderDate = null;
+                
+                for (Order order : items) {
+                    orderTotal += order.getPrice() * order.getQuantity();
+                    if (orderDate == null) {
+                        try {
+                            orderDate = dateFormat.parse(order.getDate());
+                        } catch (Exception e) {
+                            orderDate = new Date();
+                        }
+                    }
+                }
+                
+                // Calculate expected delivery date (5-7 days from order)
+                Calendar calendar = Calendar.getInstance();
+                if (orderDate != null) {
+                    calendar.setTime(orderDate);
+                } else {
+                    calendar.setTime(new Date());
+                }
+                calendar.add(Calendar.DAY_OF_YEAR, 6);
+                Date deliveryDate = calendar.getTime();
+            %>
+            <div class="order-section">
+                <div class="order-header">
+                    <div class="order-id-section">
+                        <p class="order-id"><%= orderGroupId %></p>
+                        <p class="order-date">Placed on <%= orderDate != null ? sdf.format(orderDate) : "N/A" %></p>
+                    </div>
+                    <span class="order-status-badge">✓ Delivered</span>
+                </div>
+
+                <div class="order-actions">
+                    <button class="btn-small btn-small-brand" onclick="showInvoice('<%= orderGroupId %>')">📄 View Invoice</button>
+                    <button class="btn-small" onclick="downloadInvoiceAsPDF('<%= orderGroupId %>')">⬇️ Download PDF</button>
+                    <button class="btn-small" onclick="printInvoice('<%= orderGroupId %>')">🖨️ Print</button>
+                    <button class="btn-small btn-danger" onclick="deleteOrder('<%= orderGroupId %>')">🗑️ Delete</button>
+                </div>
+
+                <div class="items-grid">
+                    <% for (Order order : items) { %>
+                    <div class="order-item">
+                        <div>
+                            <% if (order.getImageUrl() != null && !order.getImageUrl().isEmpty()) { %>
+                            <img src="<%= order.getImageUrl() %>" alt="<%= order.getName() %>" class="item-image" onerror="this.style.display='none'">
+                            <% } else { %>
+                            <div style="width: 80px; height: 80px; background: var(--bg-soft); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 32px;">📦</div>
+                            <% } %>
+                        </div>
+                        <div class="item-info">
+                            <h4><%= order.getName() %></h4>
+                            <p>Qty: <%= order.getQuantity() %> × $<%= String.format("%.2f", order.getPrice()) %></p>
+                        </div>
+                        <div class="item-price">
+                            $<%= String.format("%.2f", order.getPrice() * order.getQuantity()) %>
+                        </div>
+                    </div>
+                    <% } %>
+                </div>
+
+                <div class="order-summary">
+                    <div class="summary-item">
+                        <div class="summary-label">Items</div>
+                        <div class="summary-value"><%= items.size() %></div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">Subtotal</div>
+                        <div class="summary-value">$<%= String.format("%.2f", orderTotal) %></div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">Delivery</div>
+                        <div class="summary-value" style="color: var(--ok);">FREE</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">Expected By</div>
+                        <div class="summary-value" style="font-size: 14px; color: var(--brand-a);"><%= sdf.format(deliveryDate) %></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Invoice Modal -->
+            <div id="invoice-<%= orderGroupId.hashCode() %>" class="invoice-modal">
+                <button class="close-invoice" onclick="closeInvoice('<%= orderGroupId %>')">✕</button>
+                <div class="invoice-content">
+                    <div class="invoice-header">
+                        <h2>INVOICE</h2>
+                        <p style="margin: 10px 0 0 0; color: var(--text-muted);">Order <%= orderGroupId %></p>
+                    </div>
+
+                    <div class="invoice-details">
+                        <div class="invoice-detail-block">
+                            <h4>Bill To</h4>
+                            <p><strong><%= auth.getUsername() %></strong></p>
+                            <p><%= auth.getEmail() %></p>
+                        </div>
+                        <div class="invoice-detail-block">
+                            <h4>Order Details</h4>
+                            <p><strong>Order Date:</strong><br><%= orderDate != null ? sdf.format(orderDate) : "N/A" %></p>
+                            <p><strong>Expected Delivery:</strong><br><%= sdf.format(deliveryDate) %></p>
+                        </div>
+                    </div>
+
+                    <div class="invoice-items">
+                        <table class="invoice-table">
+                            <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Qty</th>
+                                <th>Unit Price</th>
+                                <th>Total</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <% for (Order order : items) { %>
+                            <tr>
+                                <td><%= order.getName() %></td>
+                                <td><%= order.getQuantity() %></td>
+                                <td>$<%= String.format("%.2f", order.getPrice()) %></td>
+                                <td>$<%= String.format("%.2f", order.getPrice() * order.getQuantity()) %></td>
+                            </tr>
+                            <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="invoice-total">
+                        <div style="font-size: 14px;">TOTAL:</div>
+                        <div style="color: var(--brand-a); font-size: 20px;">$<%= String.format("%.2f", orderTotal) %></div>
+                    </div>
+
+                    <div class="invoice-actions">
+                        <button class="btn btn-small btn-small-brand" onclick="printInvoice(<%= orderId %>)">🖨️ Print</button>
+                        <button class="btn btn-small btn-small-brand" onclick="downloadInvoice(<%= orderId %>)">⬇️ Download</button>
+                        <button class="btn btn-small" onclick="closeInvoice(<%= orderId %>)">Close</button>
+                    </div>
+                </div>
+            </div>
+            <% } %>
+        <% } %>
     </div>
+</div>
+
+<script>
+    function showInvoice(orderGroupId) {
+        const hashCode = orderGroupId.split('').reduce((a, b) => {
+            a = ((a << 5) - a) + b.charCodeAt(0);
+            return a & a;
+        }, 0);
+        document.getElementById('invoice-' + hashCode).classList.add('show');
+    }
+
+    function closeInvoice(orderGroupId) {
+        const hashCode = orderGroupId.split('').reduce((a, b) => {
+            a = ((a << 5) - a) + b.charCodeAt(0);
+            return a & a;
+        }, 0);
+        document.getElementById('invoice-' + hashCode).classList.remove('show');
+    }
+
+    function printInvoice(orderGroupId) {
+        const hashCode = orderGroupId.split('').reduce((a, b) => {
+            a = ((a << 5) - a) + b.charCodeAt(0);
+            return a & a;
+        }, 0);
+        const modal = document.getElementById('invoice-' + hashCode);
+        
+        if (!modal) {
+            alert('Invoice not found');
+            return;
+        }
+        
+        // Clone the invoice content
+        const printContent = modal.querySelector('.invoice-content').cloneNode(true);
+        
+        // Remove close button and actions for print
+        const closeBtn = printContent.querySelector('.close-invoice');
+        if (closeBtn) closeBtn.remove();
+        const actions = printContent.querySelector('.invoice-actions');
+        if (actions) actions.remove();
+        
+        // Create print window
+        const printWindow = window.open('', 'PRINT', 'height=600,width=800');
+        printWindow.document.write(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Invoice ${orderGroupId}</title>
+                <style>
+                    * { margin: 0; padding: 0; }
+                    body { font-family: Arial, sans-serif; padding: 20px; color: #333; }
+                    .invoice-content { max-width: 600px; }
+                    h2 { color: #0b7285; margin-bottom: 10px; }
+                    table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+                    th, td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; }
+                    th { background-color: #f5f5f5; font-weight: bold; }
+                    .invoice-header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #0b7285; padding-bottom: 15px; }
+                    .invoice-details { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; }
+                    .invoice-detail-block h4 { font-size: 12px; color: #666; text-transform: uppercase; margin-bottom: 8px; }
+                    .invoice-total { display: flex; justify-content: space-between; font-weight: bold; padding-top: 20px; border-top: 2px solid #0b7285; }
+                    @media print {
+                        body { margin: 0; padding: 10px; }
+                        .no-print { display: none; }
+                    }
+                </style>
+            </head>
+            <body>
+                ${printContent.innerHTML}
+            </body>
+            </html>
+        `);
+        printWindow.document.close();
+        
+        // Delay print to ensure content is loaded
+        setTimeout(() => {
+            printWindow.focus();
+            printWindow.print();
+            printWindow.close();
+        }, 250);
+    }
+
+    function downloadInvoiceAsPDF(orderGroupId) {
+        const hashCode = orderGroupId.split('').reduce((a, b) => {
+            a = ((a << 5) - a) + b.charCodeAt(0);
+            return a & a;
+        }, 0);
+        const modal = document.getElementById('invoice-' + hashCode);
+        
+        if (!modal) {
+            alert('Invoice not found');
+            return;
+        }
+        
+        const invoiceContent = modal.querySelector('.invoice-content');
+        const invoiceHTML = invoiceContent.innerHTML;
+        
+        // Create a temporary form to send to server for PDF generation
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '${pageContext.request.contextPath}/download-invoice';
+        
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'invoiceHtml';
+        input.value = invoiceHTML;
+        form.appendChild(input);
+        
+        const orderIdInput = document.createElement('input');
+        orderIdInput.type = 'hidden';
+        orderIdInput.name = 'orderId';
+        orderIdInput.value = orderGroupId;
+        form.appendChild(orderIdInput);
+        
+        document.body.appendChild(form);
+        form.submit();
+        document.body.removeChild(form);
+    }
+
+    function deleteOrder(orderGroupId) {
+        if (confirm('Are you sure you want to delete this order?')) {
+            const form = document.createElement('form');
+            form.method = 'GET';
+            form.action = '${pageContext.request.contextPath}/orders';
+            
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'deleteOrderId';
+            input.value = orderGroupId;
+            form.appendChild(input);
+            
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+
+    function clearAllOrders() {
+        if (confirm('Are you sure you want to clear all delivered orders? This action cannot be undone.')) {
+            const orders = document.querySelectorAll('.order-section');
+            const orderIds = [];
+            
+            orders.forEach((order, index) => {
+                const orderIdText = order.querySelector('.order-id').textContent;
+                orderIds.push(orderIdText);
+            });
+            
+            // Delete all orders
+            orderIds.forEach(orderId => {
+                const form = document.createElement('form');
+                form.method = 'GET';
+                form.action = '${pageContext.request.contextPath}/orders';
+                
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'deleteOrderId';
+                input.value = orderId;
+                form.appendChild(input);
+                
+                document.body.appendChild(form);
+                form.submit();
+                document.body.removeChild(form);
+                
+                // Add a small delay between deletions
+                setTimeout(() => {}, 100);
+            });
+        }
+    }
+
+    // Close modal when clicking outside
+    document.addEventListener('click', function(event) {
+        if (event.target.classList.contains('invoice-modal')) {
+            const modal = event.target;
+            const modalId = modal.id.split('-')[1];
+            
+            // Find the corresponding order group ID and close it
+            const orderSections = document.querySelectorAll('.order-section');
+            orderSections.forEach(section => {
+                const orderId = section.querySelector('.order-id').textContent;
+                const hashCode = orderId.split('').reduce((a, b) => {
+                    a = ((a << 5) - a) + b.charCodeAt(0);
+                    return a & a;
+                }, 0);
+                if (hashCode.toString() === modalId) {
+                    closeInvoice(orderId);
+                }
+            });
+        }
+    });
+</script>
+
+<script src="${pageContext.request.contextPath}/assets/js/theme.js"></script>
 </body>
 </html>

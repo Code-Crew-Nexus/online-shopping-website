@@ -19,169 +19,37 @@
 %>
 <html>
 <head>
-  <title>Shipping Catalog </title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
-  <style>
-
-    html, body {
-      background-color: #0f172a !important; /* Deep Navy Dark Mode */
-      color: white !important;
-      margin: 0;
-      padding: 0;
-      min-height: 100vh;
-    }
-    .btn-premium {
-      background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%) !important;
-      color: white !important;
-      padding: 12px 20px;
-      border-radius: 12px;
-      text-decoration: none;
-      display: block;
-      font-weight: bold;
-      text-align: center;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
-      border: none;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 0.95rem;
-      margin-top: 10px;
-    }
-
-    .btn-premium:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(168, 85, 247, 0.6);
-      filter: brightness(1.1);
-      color: white !important;
-    }
-
-    .btn-premium:active {
-      transform: translateY(0);
-    }
-
-    /* Fixing the horizontal nav links so they are also visible */
-    a[href*="logout"], a[href*="cart.jsp"] {
-      transition: color 0.3s;
-    }
-    a[href*="logout"]:hover { color: #f87171 !important; }
-    a[href*="cart.jsp"]:hover { color: #a855f7 !important; }
-
-    .product-card {
-      background: rgba(255, 255, 255, 0.05) !important; /* Glass effect */
-      border: 1px solid rgba(255, 255, 255, 0.1) !important;
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-    }
-    /* Fixed variable resolution for IDE warnings */
-    :root {
-      --glass: rgba(255, 255, 255, 0.05);
-      --glass-border: rgba(255, 255, 255, 0.1);
-    }
-
-    .product-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 2.5rem;
-      padding: 20px 0;
-      align-items: stretch;
-    }
-
-    .product-card {
-      background: var(--glass);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid var(--glass-border);
-      border-radius: 20px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      transition: transform 0.3s ease, border-color 0.3s ease;
-      height: 100%; /* Ensures all cards in a row are same height */
-      min-height: 520px;
-    }
-
-    .product-card:hover {
-      transform: translateY(-10px);
-      border-color: rgba(168, 85, 247, 0.4);
-    }
-
-    .product-image-container {
-      width: 100%;
-      height: 230px;
-      background: #f8fafc;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0;
-      overflow: hidden;
-    }
-
-    .product-image-container img {
-      width: 100%;
-      height: 100%;
-      display: block;
-      margin: 0;
-      object-fit: cover;
-      object-position: center center;
-    }
-
-    .product-info {
-      padding: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      flex-grow: 1;
-    }
-
-    .product-name {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 1.15rem;
-      margin: 0;
-      color: white;
-    }
-
-    .product-desc {
-      color: #94a3b8;
-      font-size: 0.85rem;
-      margin: 10px 0;
-      height: 40px;
-      overflow: hidden;
-    }
-
-    .product-price {
-      font-size: 1.4rem;
-      font-weight: bold;
-      color: #a855f7;
-      margin-bottom: 1.25rem;
-    }
-
-    .product-actions {
-      margin-top: auto;
-    }
-  </style>
+  <title>Products - FlipZon</title>
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
 </head>
 <body>
-
-<%-- Navbar Section --%>
-<div style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 5%; background: rgba(0,0,0,0.2);">
-  <h2 style="margin:0;">Welcome, <span style="color: #a855f7;"><%= auth.getUsername() %></span>!</h2>
-  <div>
-    <a href="${pageContext.request.contextPath}/cart.jsp" style="margin-right: 20px; text-decoration:none; color: white; font-weight: bold;">🛒 View Cart</a>
-    <a href="${pageContext.request.contextPath}/logout" style="color: #ef4444; text-decoration:none;">Logout</a>
+<div class="layout">
+  <div class="top-nav">
+    <div class="links">
+      <a class="btn-link" href="${pageContext.request.contextPath}/index.jsp">Home</a>
+      <a class="btn-link" href="${pageContext.request.contextPath}/products">Products</a>
+      <a class="btn-link" href="${pageContext.request.contextPath}/cart.jsp">Cart</a>
+      <a class="btn-link" href="${pageContext.request.contextPath}/orders">Orders</a>
+      <a class="btn-link btn-danger" href="${pageContext.request.contextPath}/logout">Logout</a>
+    </div>
+    <button class="btn" type="button" data-theme-toggle>Switch Mode</button>
   </div>
-</div>
 
-<div style="padding: 2rem 5%;">
-  <h1 style="font-family: 'Plus Jakarta Sans', sans-serif; color: white;">Shipping Catalog</h1>
+  <div class="logo-shell" style="margin-bottom: 16px; display: inline-block;">
+    <img src="${pageContext.request.contextPath}/assets/images/flipzon-logo.svg" alt="FlipZon Logo">
+  </div>
 
-  <%-- Feedback Message --%>
+  <div class="card" style="margin-bottom: 16px;">
+    <h2 style="margin-bottom: 6px;">Welcome, <%= auth.getUsername() %></h2>
+    <p class="muted" style="margin: 0;">Explore curated products, add them to your cart, and track every order from the new Orders page.</p>
+  </div>
+
   <% if("added".equals(request.getParameter("status"))) { %>
-  <p style="color: #10b981; background: rgba(16, 185, 129, 0.1); padding: 12px; border-radius: 10px; font-weight: bold; border: 1px solid rgba(16, 185, 129, 0.2);">
-    ✔ Item added to your shipment!
-  </p>
+    <p class="alert alert-ok">Item added to your cart.</p>
   <% } %>
 
-  <div style="padding: 1rem 0;">
-    <h3 style="color: #94a3b8;">Available Shipping Units</h3>
-
-    <div class="product-grid">
+  <h1 style="margin: 16px 0 10px;">Shopping Catalog</h1>
+  <div class="products-grid">
       <% if (products != null && !products.isEmpty()) {
         for (Product p : products) { %>
       <%
@@ -190,42 +58,36 @@
           imagePath = "box1.png";
         }
         imagePath = imagePath.trim();
-        if (imagePath.startsWith("/images/")) {
+        if (imagePath.startsWith("/assets/images/")) {
+          imagePath = imagePath.substring("/assets/images/".length());
+        } else if (imagePath.startsWith("assets/images/")) {
+          imagePath = imagePath.substring("assets/images/".length());
+        } else if (imagePath.startsWith("/images/")) {
           imagePath = imagePath.substring("/images/".length());
         } else if (imagePath.startsWith("images/")) {
           imagePath = imagePath.substring("images/".length());
         }
         String imageSrc = (imagePath.startsWith("http://") || imagePath.startsWith("https://"))
                 ? imagePath
-                : (request.getContextPath() + "/images/" + imagePath);
+                : (request.getContextPath() + "/assets/images/" + imagePath);
       %>
 
       <div class="product-card">
-        <div class="product-image-container">
-          <img src="<%= imageSrc %>"
-               alt="<%= p.getName() %>"
-               onerror="this.src='https://via.placeholder.com/200?text=No+Image'">
-        </div>
-
-        <div class="product-info">
-          <h3 class="product-name"><%= p.getName() %></h3>
-          <p class="product-desc"><%= (p.getDescription() != null) ? p.getDescription() : "Standard shipping container." %></p>
-          <div class="product-price">$<%= p.getPrice() %></div>
-
-          <div class="product-actions">
-            <a href="${pageContext.request.contextPath}/add-to-cart?id=<%= p.getId() %>" class="btn-premium">
-              Add to Cart
-            </a>
-          </div>
+        <img src="<%= imageSrc %>" alt="<%= p.getName() %>" onerror="this.src='https://via.placeholder.com/500x300?text=No+Image'">
+        <div class="product-body">
+          <h3><%= p.getName() %></h3>
+          <p class="muted"><%= (p.getDescription() != null) ? p.getDescription() : "Quality item." %></p>
+          <div class="price">$<%= String.format("%.2f", p.getPrice()) %></div>
+          <a href="${pageContext.request.contextPath}/add-to-cart?id=<%= p.getId() %>" class="btn btn-brand">Add to Cart</a>
         </div>
       </div>
 
       <% } } else { %>
-      <p style="color: white;">No products found in the database. Ensure DAO is loading the list.</p>
+      <p class="muted">No products found in source data.</p>
       <% } %>
-    </div>
-  </div> <%-- End of inner padding div --%>
-</div> <%-- End of outer main padding div --%>
+  </div>
+</div>
+<script src="${pageContext.request.contextPath}/assets/js/theme.js"></script>
 
 </body>
 </html>

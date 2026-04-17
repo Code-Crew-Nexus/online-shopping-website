@@ -1,140 +1,88 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: Sai Krishna
-  Date: 04-04-2026
-  Time: 21:34
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="com.example.onlineshopping.model.User" %>
+<%
+  User auth = (User) session.getAttribute("authUser");
+  String msg = request.getParameter("msg");
+%>
 <html>
 <head>
-  <title>Register - Online Shopping</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      min-height: 100vh;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: radial-gradient(circle at top, #1e293b 0%, #0b1025 45%, #060b1b 100%);
-      color: #e2e8f0;
-    }
-
-    .auth-page {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-    }
-
-    .auth-card {
-      width: min(92vw, 460px);
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(148, 163, 184, 0.2);
-      border-radius: 18px;
-      box-shadow: 0 20px 60px rgba(2, 6, 23, 0.55);
-      padding: 28px 24px;
-    }
-
-    .auth-title {
-      margin: 0;
-      font-size: 1.6rem;
-      color: #f8fafc;
-    }
-
-    .auth-subtitle {
-      margin: 8px 0 20px;
-      color: #94a3b8;
-      font-size: 0.95rem;
-    }
-
-    .auth-message {
-      margin: 0 0 14px;
-      padding: 10px 12px;
-      border-radius: 10px;
-      font-weight: 600;
-      font-size: 0.92rem;
-    }
-
-    .auth-message.success {
-      color: #86efac;
-      background: rgba(16, 185, 129, 0.12);
-      border: 1px solid rgba(16, 185, 129, 0.35);
-    }
-
-    .auth-message.error {
-      color: #fca5a5;
-      background: rgba(239, 68, 68, 0.14);
-      border: 1px solid rgba(239, 68, 68, 0.4);
-    }
-
-    .auth-form input {
-      width: 100%;
-      box-sizing: border-box;
-      margin: 0 0 12px;
-      padding: 12px;
-      border-radius: 10px;
-      border: 1px solid rgba(148, 163, 184, 0.32);
-      background: rgba(30, 41, 59, 0.55);
-      color: #f8fafc;
-      outline: none;
-    }
-
-    .auth-form input:focus {
-      border-color: #818cf8;
-      box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.18);
-    }
-
-    .auth-btn {
-      width: 100%;
-      border: none;
-      border-radius: 10px;
-      padding: 12px;
-      font-weight: 700;
-      color: #fff;
-      cursor: pointer;
-      background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-      box-shadow: 0 10px 24px rgba(99, 102, 241, 0.35);
-    }
-
-    .auth-foot {
-      margin: 16px 0 0;
-      color: #94a3b8;
-      text-align: center;
-    }
-
-    .auth-foot a {
-      color: #a5b4fc;
-      text-decoration: none;
-      font-weight: 600;
-    }
-  </style>
+  <title>FlipZon - Premium Shopping Experience</title>
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
 </head>
 <body>
-<div class="auth-page">
-<div class="auth-card">
-  <h2 class="auth-title">Create an Account</h2>
-  <p class="auth-subtitle">Register to start building your shipment queue.</p>
+<div class="layout">
+  <div class="top-nav">
+    <div class="links">
+      <a class="btn-link" href="${pageContext.request.contextPath}/index.jsp">Home</a>
+      <% if (auth == null) { %>
+        <a class="btn-link" href="${pageContext.request.contextPath}/login.jsp">Login</a>
+      <% } else { %>
+        <a class="btn-link" href="${pageContext.request.contextPath}/products">Products</a>
+        <a class="btn-link" href="${pageContext.request.contextPath}/orders">Orders</a>
+        <a class="btn-link" href="${pageContext.request.contextPath}/logout">Logout</a>
+      <% } %>
+    </div>
+    <button class="btn" type="button" data-theme-toggle>Switch Mode</button>
+  </div>
 
-  <%
-    String msg = request.getParameter("msg");
-    if ("success".equals(msg)) {
-  %>
-    <p class="auth-message success">Registration successful. You can now login.</p>
-  <% } else if ("error".equals(msg)) { %>
-    <p class="auth-message error">Registration failed. Email may already exist.</p>
+  <% if (auth != null) { %>
+    <!-- Authenticated User View -->
+    <div class="hero">
+      <div class="card stack">
+        <div class="logo-shell">
+          <img src="${pageContext.request.contextPath}/assets/images/flipzon-logo.svg" alt="FlipZon Logo">
+        </div>
+        <h1>Welcome Back, <%= auth.getUsername() %>!</h1>
+        <p class="muted">Your premium shopping destination awaits. Discover curated products with seamless checkout.</p>
+        <a class="btn btn-brand" href="${pageContext.request.contextPath}/products">Explore Products</a>
+      </div>
+
+      <div class="card stack" style="justify-content: space-between;">
+        <div>
+          <h3>Quick Access</h3>
+          <div style="display: grid; gap: 10px; margin-top: 10px;">
+            <a class="btn btn-link" href="${pageContext.request.contextPath}/orders" style="text-align: center;">📦 View Orders</a>
+            <a class="btn btn-link" href="${pageContext.request.contextPath}/products" style="text-align: center;">🛍️ New Arrivals</a>
+            <a class="btn btn-link btn-danger" href="${pageContext.request.contextPath}/logout" style="text-align: center;">🚪 Sign Out</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% } else { %>
+    <!-- Unauthenticated User View -->
+    <section class="hero">
+      <div class="card stack">
+        <div class="logo-shell">
+          <img src="${pageContext.request.contextPath}/assets/images/flipzon-logo.svg" alt="FlipZon Logo">
+        </div>
+        <h1>FlipZon</h1>
+        <p class="muted">Premium marketplace for everything you need</p>
+        <p style="font-size: 0.95rem; line-height: 1.6; color: var(--text-muted); margin: 0;">
+          Discover a curated selection of premium products. Fast checkout, secure payments, and exceptional customer service.
+        </p>
+        <% if ("success".equals(msg)) { %>
+          <p class="alert alert-ok">✓ Registration successful. You can login now.</p>
+        <% } else if ("error".equals(msg)) { %>
+          <p class="alert alert-err">✗ Registration failed. Email may already exist.</p>
+        <% } %>
+      </div>
+
+      <div class="card">
+        <h2>Create Your Account</h2>
+        <p class="muted">Join thousands of happy shoppers</p>
+
+        <form class="auth-form" action="${pageContext.request.contextPath}/register" method="post">
+          <input type="text" name="username" placeholder="Full name" required>
+          <input type="email" name="email" placeholder="Email address" required>
+          <input type="password" name="password" placeholder="Password (min 6 characters)" required minlength="6">
+          <button class="btn btn-brand" type="submit">Get Started</button>
+        </form>
+
+        <p class="footer-note">Already a member? <a href="${pageContext.request.contextPath}/login.jsp">Sign in here</a>.</p>
+      </div>
+    </section>
   <% } %>
-
-  <form class="auth-form" action="${pageContext.request.contextPath}/register" method="post">
-    <input type="text" name="username" placeholder="Username" required>
-    <input type="email" name="email" placeholder="Email" required>
-    <input type="password" name="password" placeholder="Password" required>
-    <button class="auth-btn" type="submit">Register</button>
-
-    <p class="auth-foot">Already have an account? <a href="${pageContext.request.contextPath}/login.jsp">Login here</a></p>
-  </form>
 </div>
-</div>
+<script src="${pageContext.request.contextPath}/assets/js/theme.js"></script>
 </body>
 </html>

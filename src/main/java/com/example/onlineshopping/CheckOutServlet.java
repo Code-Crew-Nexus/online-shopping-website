@@ -7,9 +7,12 @@ import com.example.onlineshopping.model.*;
 import com.example.onlineshopping.dao.ProductDAO;
 import com.example.onlineshopping.dao.OrderDAO;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 @WebServlet(name = "CheckOutServlet", value = "/cart-check-out")
@@ -21,30 +24,41 @@ public class CheckOutServlet extends HttpServlet {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             String date = formatter.format(new Date());
 
-            // 2. Get User and Cart from Session
+            // 2. Generate unique order group ID (all items in one checkout get same ID)
+            String orderGroupId = "ORD-" + System.currentTimeMillis() + "-" + (int)(Math.random() * 10000);
+
+            // 3. Get User and Cart from Session
             User auth = (User) request.getSession().getAttribute("authUser");
+            @SuppressWarnings("unchecked")
             ArrayList<Cart> cart_list = (ArrayList<Cart>) request.getSession().getAttribute("cart-list");
 
-            // 3. If everything exists, process the checkout
+            // 4. If everything exists, process the checkout
             if (cart_list != null && auth != null) {
                 OrderDAO oDao = new OrderDAO();
                 ProductDAO pDao = new ProductDAO();
                 double totalAmount = pDao.getTotalCartPrice(cart_list);
+                List<Order> ordersToInsert = new ArrayList<>();
 
+                // All items get the same order group ID
                 for (Cart c : cart_list) {
                     Order order = new Order();
                     order.setId(c.getId());
+                    order.setOrderGroupId(orderGroupId);
                     order.setUid(auth.getId());
                     order.setQuantity(c.getQuantity());
                     order.setDate(date);
-
-                    oDao.insertOrder(order);
+                    order.setOrderStatus("Delivered");
+                    ordersToInsert.add(order);
                 }
 
-                // 4. CLEAR the cart session so it's ready for the next order
-                request.getSession().removeAttribute("cart-list");
-                String totalText = String.format(Locale.US, "%.2f", totalAmount);
-                response.sendRedirect(request.getContextPath() + "/orders.jsp?status=success&total=" + totalText);
+                if (oDao.insertOrders(ordersToInsert)) {
+                    request.getSession().removeAttribute("cart-list");
+                    String totalText = String.format(Locale.US, "%.2f", totalAmount);
+                    response.sendRedirect(request.getContextPath() + "/orders?status=success&total="
+                            + URLEncoder.encode(totalText, StandardCharsets.UTF_8));
+                } else {
+                    response.sendRedirect(request.getContextPath() + "/cart.jsp?status=checkout-error");
+                }
             } else {
                 response.sendRedirect(request.getContextPath() + "/index.jsp");
             }

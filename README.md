@@ -1,11 +1,11 @@
 <div align="center">
 
-# Logistics & E-Commerce Management System
+# FlipZon
 
 ![Project Status: Active](https://img.shields.io/badge/status-active-brightgreen)
 ![Platform: Windows + Linux](https://img.shields.io/badge/platform-Windows%20%7C%20Linux-blue)
 ![Build: Maven WAR](https://img.shields.io/badge/build-Maven-orange)
-![Java](https://img.shields.io/badge/Java-25-red)
+![Java](https://img.shields.io/badge/Java-17--26-red)
 
 ![GitHub forks](https://img.shields.io/github/forks/Code-Crew-Nexus/online-shopping-website?style=social)
 ![GitHub stars](https://img.shields.io/github/stars/Code-Crew-Nexus/online-shopping-website?style=social)
@@ -15,7 +15,7 @@
 
 ## Languages & Tools
 
-![Java](https://img.shields.io/badge/Java-25-red?logo=openjdk&logoColor=white)
+![Java](https://img.shields.io/badge/Java-17--26-red?logo=openjdk&logoColor=white)
 ![Jakarta Servlet](https://img.shields.io/badge/Jakarta%20Servlet-6.0.0-orange)
 ![JSP](https://img.shields.io/badge/JSP-View%20Layer-blue)
 ![JDBC](https://img.shields.io/badge/JDBC-MySQL-informational)
@@ -31,7 +31,7 @@
 
 A Java web application (J2EE-style) that simulates an e-commerce and logistics flow: user registration, login, product browsing, cart/session management, and checkout with persistent order storage in MySQL.
 
-This repository is packaged as a Maven WAR project named `OnlineShopping`.
+This repository is packaged as a Maven WAR project named `flipzon`.
 
 ---
 
@@ -51,10 +51,22 @@ This repository is packaged as a Maven WAR project named `OnlineShopping`.
 online-shopping-website/
 |- pom.xml
 |- mvnw / mvnw.cmd
-|- docs/
-|  |- requirements.txt
-|  |- setup_dependencies.py
-|  `- update_requirements.py
+|- assets/
+|  |- data/
+|  |  `- products.json
+|  |- scripts/
+|  |  |- requirements.txt
+|  |  |- setup_dependencies.py
+|  |  |- update_requirements.py
+|  |  |- database.txt
+|  |  |- database.local.txt (optional, local only)
+|  |  |- setup_database.py
+|  |  |- update_database.py
+|  |  `- setup-database.ps1
+|  `- webapp/
+|     |- css/style.css
+|     |- js/theme.js
+|     `- images/
 `- src/
    `- main/
       |- java/com/example/onlineshopping/
@@ -82,7 +94,6 @@ online-shopping-website/
          |- products.jsp
          |- cart.jsp
          |- orders.jsp
-         |- css/style.css
          `- WEB-INF/web.xml
 ```
 
@@ -92,7 +103,10 @@ online-shopping-website/
 - `Cart` and `Order` use inheritance from `Product`
 - `src/main/java/com/example/onlineshopping/dao/` isolates SQL operations (`UserDAO`, `ProductDAO`, `OrderDAO`)
 - `src/main/java/com/example/onlineshopping/util/DBConnection.java` centralizes DB connectivity
-- `src/main/webapp/` contains JSP pages for UI and request flow
+- `src/main/webapp/` contains JSP pages and servlet mappings
+- `assets/webapp/` stores static resources (`css`, `js`, `images`) copied into WAR at build time under `/assets`
+- `assets/data/` stores JSON application data copied to classpath at build time
+- `assets/scripts/` stores dependency and database automation scripts
 
 ---
 
@@ -118,7 +132,7 @@ To build and run this project successfully, ensure the following prerequisites a
 ### General
 
 - A working `git` installation
-- Java JDK (target currently configured as Java 25 in `pom.xml`)
+- Java JDK **17, 21, 24, 25, or 26**
 - Maven Wrapper (`mvnw` / `mvnw.cmd`) or Maven installed globally
 - MySQL server running locally
 - Apache Tomcat 10.1+ for deployment
@@ -153,7 +167,16 @@ sudo apt-get install -y openjdk-21-jdk maven git mysql-server
 - GitHub Desktop
 - Postman (for endpoint testing)
 
-> Note: If your local JDK is lower than 25 (for example Java 17), update `maven.compiler.source` and `maven.compiler.target` in `pom.xml` accordingly.
+### Java Compatibility Policy
+
+- This project now supports building with **JDK 17 through JDK 26**.
+- `pom.xml` enforces allowed JDK versions via Maven Enforcer range: `[17,27)`.
+- Compilation target is Java 17 bytecode (`maven.compiler.release=17`) for broader runtime compatibility.
+- You can still override compiler release if needed:
+
+```powershell
+.\mvnw.cmd -Dmaven.compiler.release=21 clean package
+```
 
 ---
 
@@ -168,20 +191,20 @@ cd online-shopping-website
 
 ---
 
-## Docs Dependency Automation
+## Script Automation
 
-The `docs/` folder includes Python scripts for managing dependency setup and ongoing requirement updates.
+The `assets/scripts/` folder includes Python and PowerShell scripts for dependency and database automation.
 
 ### 1. Setup dependencies from requirements
 
 ```powershell
-py -3 docs/setup_dependencies.py
+py -3 assets/scripts/setup_dependencies.py
 ```
 
 Dry run preview:
 
 ```powershell
-py -3 docs/setup_dependencies.py --dry-run
+py -3 assets/scripts/setup_dependencies.py --dry-run
 ```
 
 ### 2. Update requirements for new implementations
@@ -189,20 +212,29 @@ py -3 docs/setup_dependencies.py --dry-run
 Append new packages:
 
 ```powershell
-py -3 docs/update_requirements.py --mode append --packages requests==2.32.3
+py -3 assets/scripts/update_requirements.py --mode append --packages requests==2.32.3
 ```
 
 Overwrite requirements completely:
 
 ```powershell
-py -3 docs/update_requirements.py --mode overwrite --packages flask==3.1.0 requests==2.32.3
+py -3 assets/scripts/update_requirements.py --mode overwrite --packages flask==3.1.0 requests==2.32.3
 ```
 
 Overwrite from current environment (`pip freeze`):
 
 ```powershell
-py -3 docs/update_requirements.py --mode overwrite --from-freeze
+py -3 assets/scripts/update_requirements.py --mode overwrite --from-freeze
 ```
+
+### 3. Database scripts (new)
+
+- `assets/scripts/database.txt`: shared default DB config committed to git
+- `assets/scripts/database.local.txt`: optional local override file for each contributor, ignored by git
+- `assets/scripts/setup_database.py`: reads shared config + local override, then creates DB, user, tables, and seeds products
+- `assets/scripts/update_database.py`: updates DB config from env/CLI and can write either local or shared target
+- `assets/scripts/update_dependencies.py`: compatibility wrapper that updates shared `database.txt` by default
+- `assets/scripts/setup-database.ps1`: PowerShell setup option for Windows with the same shared + local config merge
 
 ---
 
@@ -224,7 +256,7 @@ This project includes `.gitattributes` to reduce CRLF/LF conflicts between Windo
 .\mvnw.cmd clean package
 ```
 
-This generates `target/OnlineShopping-1.0-SNAPSHOT.war`.
+This generates `target/flipzon-1.0-SNAPSHOT.war`.
 
 ### Option B: Maven installed globally
 
@@ -234,11 +266,11 @@ mvn clean package
 
 ### Deploy on Tomcat
 
-1. Copy `target/OnlineShopping-1.0-SNAPSHOT.war` into Tomcat `webapps/`
+1. Copy `target/flipzon-1.0-SNAPSHOT.war` into Tomcat `webapps/`
 2. Start Tomcat
 3. Open:
-   - `http://localhost:8080/OnlineShopping-1.0-SNAPSHOT/index.jsp` (registration)
-   - `http://localhost:8080/OnlineShopping-1.0-SNAPSHOT/login.jsp` (login)
+  - `http://localhost:8080/flipzon-1.0-SNAPSHOT/index.jsp` (registration)
+  - `http://localhost:8080/flipzon-1.0-SNAPSHOT/login.jsp` (login)
 
 ---
 
@@ -265,60 +297,137 @@ The request lifecycle follows:
 
 ---
 
-## Database Setup
+## Database Setup (Automated)
 
-The app expects a MySQL database named `shop_db` (based on `DBConnection.java`).
+### Why credentials should not be hardcoded
 
-### 1. Create database and tables
+Hardcoding database credentials creates security and portability problems:
+
+- Personal usernames/passwords get exposed in Git history.
+- Every contributor must edit source code before running.
+- CI/CD and deployment environments cannot inject their own secrets cleanly.
+
+This project now uses environment variables with project-scoped defaults in `DBConnection.java`.
+
+`assets/scripts/database.txt` is safe to keep in the repo as a shared template because it contains project defaults, not personal machine secrets. If a contributor needs different local values, they should create `assets/scripts/database.local.txt` instead of editing the tracked file.
+
+### Environment variables used by the app
+
+- `SHOP_DB_HOST` (default: `localhost`)
+- `SHOP_DB_PORT` (default: `3306`)
+- `SHOP_DB_NAME` (default: `flipzon_shop`)
+- `SHOP_DB_USER` (default: `flipzon_app`)
+- `SHOP_DB_PASSWORD` (default: `flipzon_app_password`)
+
+### One-command database bootstrap script (Windows PowerShell)
+
+Run from project root:
+
+```powershell
+.\assets\scripts\setup-database.ps1
+```
+
+What this script does:
+
+- Creates database `flipzon_shop`
+- Creates app user `flipzon_app`
+- Grants required privileges on project database
+- Creates tables: `users`, `products`, `orders`
+- Seeds the `products` table from `assets/data/products.json` so checkout works on a fresh clone
+
+You can override defaults while running:
+
+```powershell
+.\assets\scripts\setup-database.ps1 -RootUser root -DbHost localhost -Port 3306 -DbName flipzon_shop -AppUser flipzon_app -AppPassword flipzon_app_password
+```
+
+### Python database setup/update workflow
+
+1. Review the shared defaults:
+
+```powershell
+notepad .\assets\scripts\database.txt
+```
+
+2. Optional: create a machine-specific override without changing the tracked file:
+
+```powershell
+py -3 .\assets\scripts\update_database.py
+```
+
+This writes `assets/scripts/database.local.txt`, which is ignored by git.
+
+3. Optional: update shared `database.txt` for your current system session flow:
+
+```powershell
+py -3 .\assets\scripts\update_dependencies.py --probe-mysql
+```
+
+Use this only when shared defaults should be refreshed.
+
+4. Apply setup from the merged config:
+
+```powershell
+py -3 .\assets\scripts\setup_database.py
+```
+
+5. Optional: probe current MySQL instance and annotate your local override:
+
+```powershell
+py -3 .\assets\scripts\update_database.py --probe-mysql
+```
+
+In IntelliJ, run these commands in the built-in Terminal from the project root using PowerShell.
+
+After script execution, persist env vars (new terminal required):
+
+```powershell
+setx SHOP_DB_HOST localhost
+setx SHOP_DB_PORT 3306
+setx SHOP_DB_NAME flipzon_shop
+setx SHOP_DB_USER flipzon_app
+setx SHOP_DB_PASSWORD flipzon_app_password
+```
+
+### Manual SQL alternative (if not using script)
 
 ```sql
-CREATE DATABASE IF NOT EXISTS shop_db;
-USE shop_db;
+CREATE DATABASE IF NOT EXISTS flipzon_shop;
+USE flipzon_shop;
 
 CREATE TABLE IF NOT EXISTS users (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    username VARCHAR(100) NOT NULL,
-    email VARCHAR(100) NOT NULL UNIQUE,
-    password VARCHAR(100) NOT NULL,
-    role VARCHAR(50) DEFAULT 'USER'
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  username VARCHAR(100) NOT NULL,
+  email VARCHAR(100) NOT NULL UNIQUE,
+  password VARCHAR(100) NOT NULL,
+  role VARCHAR(50) DEFAULT 'USER'
 );
 
 CREATE TABLE IF NOT EXISTS products (
-    id INT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    price DECIMAL(10,2) NOT NULL,
-    description TEXT,
-    image_url VARCHAR(255)
+  id INT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  price DECIMAL(10,2) NOT NULL,
+  description TEXT,
+  image_url VARCHAR(255)
 );
 
 CREATE TABLE IF NOT EXISTS orders (
-    o_id INT PRIMARY KEY AUTO_INCREMENT,
-    p_id INT NOT NULL,
-    u_id INT NOT NULL,
-    o_quantity INT NOT NULL,
-    o_date VARCHAR(20) NOT NULL,
-    o_address VARCHAR(255),
-    FOREIGN KEY (p_id) REFERENCES products(id),
-    FOREIGN KEY (u_id) REFERENCES users(id)
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  p_id INT NOT NULL,
+  u_id INT NOT NULL,
+  o_quantity INT NOT NULL,
+  o_date VARCHAR(20) NOT NULL,
+  o_address VARCHAR(255),
+  FOREIGN KEY (p_id) REFERENCES products(id),
+  FOREIGN KEY (u_id) REFERENCES users(id)
 );
 ```
 
-### 2. Seed sample products
+### Product data note
 
-```sql
-INSERT INTO products (id, name, price, description, image_url) VALUES
-(1, 'Container A', 120.00, 'Standard dry container', NULL),
-(2, 'Container B', 250.00, 'Refrigerated container', NULL),
-(3, 'Pallet Bundle', 75.50, 'Bulk pallet pack', NULL)
-ON DUPLICATE KEY UPDATE name = VALUES(name), price = VALUES(price);
-```
-
-### 3. Configure DB credentials
-
-Update `src/main/java/com/example/onlineshopping/util/DBConnection.java` if needed:
-
-- URL: `jdbc:mysql://localhost:3306/shop_db`
-- Username/password: your local MySQL credentials
+- Product catalog is JSON-first (`assets/data/products.json`) with DB fallback.
+- The setup scripts also seed the `products` table from that JSON so the `orders` foreign key works correctly on a new local database.
+- User and order persistence still use MySQL.
 
 ---
 
@@ -360,7 +469,6 @@ This project demonstrates end-to-end enterprise web application fundamentals usi
 ## Notes
 
 - Passwords are currently stored in plain text (for academic/demo use). In production, use hashing (for example, BCrypt).
-- Database connection settings are hardcoded in `DBConnection.java`.
+- Database connection settings are read from environment variables in `DBConnection.java`.
 - `CheckOutServlet` currently writes a static shipping address (`Hyderabad Hub (PBL Demo)`).
 - Developed as part of Year II, Semester 2 PBL (Problem-Based Learning) coursework.
-

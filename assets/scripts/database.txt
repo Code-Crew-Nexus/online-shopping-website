@@ -1,0 +1,8 @@
+{
+  "db_host": "localhost",
+  "db_port": 3306,
+  "db_name": "flipzon_shop",
+  "app_user": "flipzon_app",
+  "app_password": "flipzon_app_password",
+  "root_user": "root"
+}

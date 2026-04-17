@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Append to or overwrite docs/requirements.txt for new implementations."""
+"""Append to or overwrite assets/scripts/requirements.txt for new implementations."""
 
 from __future__ import annotations
 
