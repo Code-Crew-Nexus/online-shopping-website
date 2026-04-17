@@ -1,94 +1,61 @@
-# Normalize line endings to LF and let Git handle platform checkout conversions.
+# Default behavior: normalize text files
 * text=auto
 
-# ============================================================================
-# SOURCE CODE - Force LF endings
-# ============================================================================
-*.java text eol=lf diff=java
-*.jsp text eol=lf diff=html
-*.xml text eol=lf diff=xml
-*.json text eol=lf diff=json
-*.json5 text eol=lf
-*.jsonld text eol=lf
-*.txt text eol=lf
-*.yml text eol=lf diff=yaml
-*.yaml text eol=lf diff=yaml
+# Source and config files: keep LF
+*.java text eol=lf
+*.jsp text eol=lf
+*.xml text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
 *.properties text eol=lf
-*.sql text eol=lf diff=sql
-*.css text eol=lf diff=css
-*.js text eol=lf diff=javascript
-*.ts text eol=lf diff=typescript
-*.jsx text eol=lf diff=javascript
-*.tsx text eol=lf diff=typescript
-*.py text eol=lf diff=python
+*.sql text eol=lf
+*.css text eol=lf
+*.js text eol=lf
+*.ts text eol=lf
+*.py text eol=lf
 *.sh text eol=lf
-*.bash text eol=lf
-*.md text eol=lf diff=markdown
-*.mdown text eol=lf
-*.markdown text eol=lf
-*.mdx text eol=lf
-*.svg text eol=lf diff=xml
-*.html text eol=lf diff=html
+*.md text eol=lf
+*.txt text eol=lf
+*.html text eol=lf
+*.svg text eol=lf
 
-# ============================================================================
-# BUILD/CONFIG FILES - Force LF endings
-# ============================================================================
-Dockerfile text eol=lf
-.dockerignore text eol=lf
-docker-compose.yml text eol=lf
-docker-compose.yaml text eol=lf
-.gitignore text eol=lf diff=gitignore
+# Build and VCS config
 .gitattributes text eol=lf
+.gitignore text eol=lf
 .editorconfig text eol=lf
-.env text eol=lf
-.env.* text eol=lf
-pom.xml text eol=lf diff=xml
-build.gradle text eol=lf
-settings.gradle text eol=lf
-gradle.properties text eol=lf
-Maven.POM text eol=lf
+pom.xml text eol=lf
 
-# ============================================================================
-# WINDOWS SCRIPTS - Force CRLF endings
-# ============================================================================
+# Windows scripts: keep CRLF
 *.bat text eol=crlf
 *.cmd text eol=crlf
 *.ps1 text eol=crlf
-*.ps2 text eol=crlf
-*.psx text eol=crlf
-*.psm1 text eol=crlf
 
-# ============================================================================
-# BINARY FILES - Binary handling
-# ============================================================================
-# Images
+# Binary assets
 *.png binary
 *.jpg binary
 *.jpeg binary
 *.gif binary
 *.ico binary
-*.icns binary
 *.webp binary
-*.svg binary eol=lf diff=exif
+*.bmp binary
 *.tif binary
 *.tiff binary
-*.bmp binary
 
-# Archives
+# Binary packages and archives
 *.zip binary
-*.tar binary
-*.tar.gz binary
-*.gz binary
 *.7z binary
 *.rar binary
+*.tar binary
+*.gz binary
 
-# Java/JAR files
+# Java binaries
+*.class binary
 *.jar binary
 *.war binary
 *.ear binary
-*.class binary
 
-# Documents
+# Documents and fonts
 *.pdf binary
 *.doc binary
 *.docx binary
@@ -96,33 +63,7 @@ Maven.POM text eol=lf
 *.xlsx binary
 *.ppt binary
 *.pptx binary
-*.odt binary
-
-# Audio/Video
-*.mp3 binary
-*.mp4 binary
-*.mpeg binary
-*.wav binary
-*.flv binary
-*.mov binary
-*.m4a binary
-
-# Fonts
 *.ttf binary
 *.otf binary
 *.woff binary
 *.woff2 binary
-*.eot binary
-
-# Archives
-*.zip binary
-*.exe binary
-*.dll binary
-
-# ============================================================================
-# SPECIAL FILES
-# ============================================================================
-.classpath diff=java
-.project merge=union
-*.launch merge=union
-
