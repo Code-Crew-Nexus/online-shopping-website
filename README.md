@@ -1,6 +1,6 @@
 <div align="center">
 
-# Logistics & E-Commerce Management System
+# FlipZon Logistics & E-Commerce Management System
 
 ![Project Status: Active](https://img.shields.io/badge/status-active-brightgreen)
 ![Platform: Windows + Linux](https://img.shields.io/badge/platform-Windows%20%7C%20Linux-blue)
@@ -8,7 +8,7 @@
 ![Java](https://img.shields.io/badge/Java-25-red)
 
 ![GitHub forks](https://img.shields.io/github/forks/Code-Crew-Nexus/online-shopping-website?style=social)
-![GitHub stars](https://img.shields.io/github/stars/Code-Crew-Nexus/online-shopping-website?style=social)
+![GitHub stars](https://img.shields.io/github/stars/Code-Crew-Nexus/online-shopping-website?style=social&label=Stars)
 ![GitHub watchers](https://img.shields.io/github/watchers/Code-Crew-Nexus/online-shopping-website?style=social)
 
 ---

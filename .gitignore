@@ -23,9 +23,7 @@ replay_pid*
 *.iws
 
 # VS Code
-.vscode/*
-!.vscode/settings.json
-!.vscode/extensions.json
+.vscode/
 
 # Eclipse / STS
 .project
