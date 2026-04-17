@@ -162,7 +162,7 @@ sudo apt-get install -y openjdk-21-jdk maven git mysql-server
 ### Clone the Repository
 
 ```bash
-git clone <your-repository-url>
+git clone https://github.com/Code-Crew-Nexus/online-shopping-website.git
 cd online-shopping-website
 ```
 
