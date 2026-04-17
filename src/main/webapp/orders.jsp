@@ -415,7 +415,7 @@
 
                 <div class="order-actions">
                     <button class="btn-small btn-small-brand" onclick="showInvoice('<%= orderGroupId %>')">📄 View Invoice</button>
-                    <button class="btn-small" onclick="downloadInvoiceAsPDF('<%= orderGroupId %>')">⬇️ Download PDF</button>
+                    <button class="btn-small" onclick="downloadInvoiceAsPDF('<%= orderGroupId %>')">⬇️ Download Invoice</button>
                     <button class="btn-small" onclick="printInvoice('<%= orderGroupId %>')">🖨️ Print</button>
                     <button class="btn-small btn-danger" onclick="deleteOrder('<%= orderGroupId %>')">🗑️ Delete</button>
                 </div>
@@ -513,7 +513,7 @@
 
                     <div class="invoice-actions">
                         <button class="btn btn-small btn-small-brand" onclick="printInvoice('<%= orderGroupId %>')">🖨️ Print</button>
-                        <button class="btn btn-small btn-small-brand" onclick="downloadInvoiceAsPDF('<%= orderGroupId %>')">⬇️ Download</button>
+                        <button class="btn btn-small btn-small-brand" onclick="downloadInvoiceAsPDF('<%= orderGroupId %>')">⬇️ Download Invoice</button>
                         <button class="btn btn-small" onclick="closeInvoice('<%= orderGroupId %>')">Close</button>
                     </div>
                 </div>
@@ -561,44 +561,61 @@
         const actions = printContent.querySelector('.invoice-actions');
         if (actions) actions.remove();
         
-        // Create print window
-        const printWindow = window.open('', 'PRINT', 'height=600,width=800');
-        printWindow.document.write(`
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <title>Invoice ${orderGroupId}</title>
-                <style>
-                    * { margin: 0; padding: 0; }
-                    body { font-family: Arial, sans-serif; padding: 20px; color: #333; }
-                    .invoice-content { max-width: 600px; }
-                    h2 { color: #0b7285; margin-bottom: 10px; }
-                    table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-                    th, td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; }
-                    th { background-color: #f5f5f5; font-weight: bold; }
-                    .invoice-header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #0b7285; padding-bottom: 15px; }
-                    .invoice-details { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; }
-                    .invoice-detail-block h4 { font-size: 12px; color: #666; text-transform: uppercase; margin-bottom: 8px; }
-                    .invoice-total { display: flex; justify-content: space-between; font-weight: bold; padding-top: 20px; border-top: 2px solid #0b7285; }
-                    @media print {
-                        body { margin: 0; padding: 10px; }
-                        .no-print { display: none; }
-                    }
-                </style>
-            </head>
-            <body>
-                ${printContent.innerHTML}
-            </body>
-            </html>
-        `);
-        printWindow.document.close();
-        
-        // Delay print to ensure content is loaded
-        setTimeout(() => {
+        // Use a popup window created from the click event to keep print reliable.
+        const printWindow = window.open('', '_blank', 'width=900,height=700');
+        if (!printWindow) {
+            alert('Unable to open print window. Please allow pop-ups for this site and try again.');
+            return;
+        }
+
+        const html = '<!DOCTYPE html>' +
+            '<html>' +
+            '<head>' +
+            '<title>Invoice ' + orderGroupId + '</title>' +
+            '<style>' +
+            '* { margin: 0; padding: 0; box-sizing: border-box; }' +
+            'body { font-family: Arial, sans-serif; padding: 20px; color: #333; }' +
+            '.invoice-content { max-width: 720px; margin: 0 auto; }' +
+            'h2 { color: #0b7285; margin-bottom: 10px; }' +
+            'table { width: 100%; border-collapse: collapse; margin: 20px 0; }' +
+            'th, td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; }' +
+            'th { background-color: #f5f5f5; font-weight: bold; }' +
+            '.invoice-header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #0b7285; padding-bottom: 15px; }' +
+            '.invoice-details { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; }' +
+            '.invoice-detail-block h4 { font-size: 12px; color: #666; text-transform: uppercase; margin-bottom: 8px; }' +
+            '.invoice-total { display: flex; justify-content: space-between; font-weight: bold; padding-top: 20px; border-top: 2px solid #0b7285; }' +
+            '@media print { body { margin: 0; padding: 10px; } }' +
+            '</style>' +
+            '</head>' +
+            '<body>' +
+            '<div class="invoice-content">' + printContent.innerHTML + '</div>' +
+            '</body>' +
+            '</html>';
+
+        let hasPrinted = false;
+        const triggerPrint = function () {
+            if (hasPrinted) {
+                return;
+            }
+            hasPrinted = true;
             printWindow.focus();
             printWindow.print();
+        };
+
+        printWindow.document.open();
+        printWindow.document.write(html);
+        printWindow.document.close();
+
+        printWindow.onload = function () {
+            setTimeout(triggerPrint, 120);
+        };
+
+        printWindow.onafterprint = function () {
             printWindow.close();
-        }, 250);
+        };
+
+        // Fallback in case onload is delayed.
+        setTimeout(triggerPrint, 450);
     }
 
     function downloadInvoiceAsPDF(orderGroupId) {
@@ -613,29 +630,9 @@
             return;
         }
         
-        const invoiceContent = modal.querySelector('.invoice-content');
-        const invoiceHTML = invoiceContent.innerHTML;
-        
-        // Create a temporary form to send to server for PDF generation
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = '${pageContext.request.contextPath}/download-invoice';
-        
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'invoiceHtml';
-        input.value = invoiceHTML;
-        form.appendChild(input);
-        
-        const orderIdInput = document.createElement('input');
-        orderIdInput.type = 'hidden';
-        orderIdInput.name = 'orderId';
-        orderIdInput.value = orderGroupId;
-        form.appendChild(orderIdInput);
-        
-        document.body.appendChild(form);
-        form.submit();
-        document.body.removeChild(form);
+        const contextPath = '<%= request.getContextPath() %>';
+        const url = contextPath + '/download-invoice?orderGroupId=' + encodeURIComponent(orderGroupId);
+        window.location.href = url;
     }
 
     function deleteOrder(orderGroupId) {

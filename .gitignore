@@ -92,3 +92,7 @@ reports/
 assets/scripts/database.local.txt
 assets/scripts/*.local.*
 assets/scripts/*backup*
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal

@@ -259,4 +259,48 @@ public class OrderDAO {
             return false;
         }
     }
+
+    public List<Order> getOrdersByGroup(int userId, String orderGroupId) {
+        List<Order> orders = new ArrayList<>();
+        String query = "SELECT o.id, o.order_group_id, o.p_id, o.u_id, o.o_quantity, o.o_date, o.order_status, " +
+                "p.name, p.description, p.price, p.image_url " +
+                "FROM orders o LEFT JOIN products p ON o.p_id = p.id " +
+                "WHERE o.u_id = ? AND o.order_group_id = ? ORDER BY o.id ASC";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pst = conn.prepareStatement(query)) {
+
+            ensureOrdersSchema(conn);
+
+            pst.setInt(1, userId);
+            pst.setString(2, orderGroupId);
+
+            try (ResultSet rs = pst.executeQuery()) {
+                while (rs.next()) {
+                    Order order = new Order();
+                    int productId = rs.getInt("p_id");
+
+                    order.setOrderId(rs.getInt("id"));
+                    order.setOrderGroupId(rs.getString("order_group_id"));
+                    order.setId(productId);
+                    order.setUid(rs.getInt("u_id"));
+                    order.setQuantity(rs.getInt("o_quantity"));
+                    order.setDate(rs.getString("o_date"));
+                    order.setOrderStatus(rs.getString("order_status"));
+
+                    String productName = rs.getString("name");
+                    order.setName(productName == null || productName.isBlank() ? "Product #" + productId : productName);
+                    order.setDescription(rs.getString("description") == null ? "" : rs.getString("description"));
+                    order.setPrice(rs.getDouble("price"));
+                    order.setImageUrl(rs.getString("image_url") == null ? "" : rs.getString("image_url"));
+
+                    orders.add(order);
+                }
+            }
+        } catch (SQLException | IllegalStateException e) {
+            e.printStackTrace();
+        }
+
+        return orders;
+    }
 }
